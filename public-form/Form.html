@@ -1,0 +1,519 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root {
+        color-scheme: light;
+        --text: #202124;
+        --muted: #5f6368;
+        --line: #dadce0;
+        --accent: #1a73e8;
+        --danger: #d93025;
+        --surface: #ffffff;
+        --page: #f8f9fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+
+      main {
+        width: min(820px, calc(100% - 28px));
+        margin: 28px auto 48px;
+        background: var(--surface);
+        border-top: 8px solid var(--accent);
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(60, 64, 67, 0.2);
+      }
+
+      header {
+        padding: 30px 34px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 32px;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+
+      header p {
+        margin: 0;
+      }
+
+      .required-note,
+      .required {
+        color: var(--danger);
+      }
+
+      form {
+        padding: 4px 34px 34px;
+      }
+
+      .field {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 14px;
+        padding: 26px 0;
+      }
+
+      .number {
+        color: var(--text);
+        padding-top: 2px;
+        text-align: right;
+      }
+
+      label,
+      legend {
+        display: block;
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 400;
+      }
+
+      fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .help {
+        max-width: 680px;
+        margin: 0 0 16px;
+        color: var(--text);
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 14px;
+        font-style: italic;
+      }
+
+      input,
+      select,
+      textarea {
+        width: min(100%, 460px);
+        border: 0;
+        border-bottom: 1px solid #b8b8b8;
+        border-radius: 0;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        padding: 8px 0;
+      }
+
+      select {
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 9px 10px;
+        background: #fff;
+      }
+
+      input[type="file"] {
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 10px;
+      }
+
+      textarea {
+        min-height: 104px;
+        resize: vertical;
+      }
+
+      .choices {
+        display: grid;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .choice {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .choice input {
+        width: auto;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding-left: 48px;
+      }
+
+      button {
+        min-height: 40px;
+        border: 0;
+        border-radius: 4px;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 600;
+        padding: 0 22px;
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.65;
+      }
+
+      .status {
+        color: var(--muted);
+      }
+
+      .status.error {
+        color: var(--danger);
+        white-space: pre-line;
+      }
+
+      .status.success {
+        color: #137333;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        main {
+          width: 100%;
+          margin: 0;
+          border-radius: 0;
+        }
+
+        header,
+        form {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+
+        .field {
+          grid-template-columns: 28px minmax(0, 1fr);
+          gap: 10px;
+        }
+
+        .actions {
+          padding-left: 38px;
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Fitxa de professorat (noves incorporacions)</h1>
+        <p>Tan per docents nous com per a posar al dia les dades de la plantilla del centre</p>
+        <p class="required-note">* Indica que la pregunta és obligatòria</p>
+      </header>
+
+      <form id="teacher-form">
+        <div class="field">
+          <div class="number">1.</div>
+          <div>
+            <label for="photo">Fotografia <span class="required">*</span></label>
+            <p class="help">S'entén fotografia tipus carnet. Si contesteu des del mòbil, feu-vos-la directament amb la càmera del dispositiu.</p>
+            <input id="photo" name="photo" type="file" accept="image/*" capture="user" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">2.</div>
+          <div>
+            <label for="nom">Nom <span class="required">*</span></label>
+            <input id="nom" name="nom" type="text" required autocomplete="given-name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">3.</div>
+          <div>
+            <label for="cognoms">Cognoms <span class="required">*</span></label>
+            <input id="cognoms" name="cognoms" type="text" required autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">4.</div>
+          <div>
+            <label for="dni">DNI <span class="required">*</span></label>
+            <p class="help">O altres</p>
+            <input id="dni" name="dni" type="text" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">5.</div>
+          <div>
+            <label for="dataNaixement">Data naixement</label>
+            <input id="dataNaixement" name="dataNaixement" type="date">
+            <div class="hint">Exemple: 7 de gener de 2019</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">6.</div>
+          <div>
+            <label for="telefon">Telèfon de contacte <span class="required">*</span></label>
+            <input id="telefon" name="telefon" type="tel" required autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">7.</div>
+          <div>
+            <label for="compteXtec">Compte @xtec</label>
+            <input id="compteXtec" name="compteXtec" type="email">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">8.</div>
+          <div>
+            <label for="correuAlternatiu">Compte de correu alternatiu</label>
+            <input id="correuAlternatiu" name="correuAlternatiu" type="email" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">9.</div>
+          <div>
+            <label for="adreca">Adreça</label>
+            <input id="adreca" name="adreca" type="text" autocomplete="street-address">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">10.</div>
+          <div>
+            <label for="poblacio">Població</label>
+            <input id="poblacio" name="poblacio" type="text" autocomplete="address-level2">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">11.</div>
+          <div>
+            <label for="especialitat">Especialitat <span class="required">*</span></label>
+            <p class="help">Es refereix a l'especialitat del nomenament o de la plaça. En el cas d'especialitats amb codi de referència (507, 627...) que puguin donar a equívocs, especifiqueu-la amb claredat</p>
+            <input id="especialitat" name="especialitat" type="text" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">12.</div>
+          <div>
+            <label for="departament">Departament</label>
+            <select id="departament" name="departament">
+              <option value=""></option>
+              <option>Matemàtiques</option>
+              <option>Català</option>
+              <option>Castellà</option>
+              <option>Llengües estrangeres</option>
+              <option>Socials</option>
+              <option>Ciències</option>
+              <option>Educació Física</option>
+              <option>Diversitat / orientació</option>
+              <option>Expressió</option>
+              <option>Informàtica</option>
+              <option>Perruqueria</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">13.</div>
+          <div>
+            <label for="nomenament">Nomenament <span class="required">*</span></label>
+            <select id="nomenament" name="nomenament" required>
+              <option value=""></option>
+              <option>Funcionari amb plaça definitiva</option>
+              <option>Funcionari amb plaça provisional</option>
+              <option>Interinatge</option>
+              <option>Substitució</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">14.</div>
+          <div>
+            <fieldset>
+              <legend>Previsió de demanar reducció de jornada? <span class="required">*</span></legend>
+              <p class="help"><a href="https://mote.fyi/8s7whh5" target="_blank" rel="noopener">https://mote.fyi/8s7whh5</a></p>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="previsioReduccio" value="No" required> No</label>
+                <label class="choice"><input type="radio" name="previsioReduccio" value="Si" required> Si</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">15.</div>
+          <div>
+            <label for="motiuReduccio">Motiu de la reducció</label>
+            <p class="help">Només en cas de sol·licitar reducció de jornada durant el curs. Si és possible indiqueu també la data en la que preveieu de demanar-la.</p>
+            <textarea id="motiuReduccio" name="motiuReduccio"></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">16.</div>
+          <div>
+            <label for="solicitudReduccio">Sol·licitud de reducció de jornada</label>
+            <input id="solicitudReduccio" name="solicitudReduccio" type="file">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">17.</div>
+          <div>
+            <label for="jornada">Jornada <span class="required">*</span></label>
+            <select id="jornada" name="jornada" required>
+              <option value=""></option>
+              <option>Sencera</option>
+              <option>Sencera amb reducció</option>
+              <option>Mitja</option>
+              <option>Terç</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">18.</div>
+          <div>
+            <label for="anysEnsenyament">Anys a ensenyament</label>
+            <textarea id="anysEnsenyament" name="anysEnsenyament"></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">19.</div>
+          <div>
+            <label for="anysInstitut">Anys a l'institut Ernest Lluch i Martín</label>
+            <input id="anysInstitut" name="anysInstitut" type="text">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">20.</div>
+          <div>
+            <label for="aficions">Aficions</label>
+            <p class="help">Ens permet conèixer millor els treballadors i, en cas de necessitat, conèixer disponibilitat per organitzar activitats extraordinàries, xerrades, etc.</p>
+            <textarea id="aficions" name="aficions"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="submit-button" type="submit">Enviar</button>
+          <div id="status" class="status" role="status" aria-live="polite"></div>
+        </div>
+      </form>
+    </main>
+
+    <script>
+      const form = document.getElementById('teacher-form');
+      const statusEl = document.getElementById('status');
+      const button = document.getElementById('submit-button');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        statusEl.className = 'status';
+        statusEl.textContent = 'Enviant...';
+        button.disabled = true;
+
+        try {
+          const payload = await buildPayload(new FormData(form));
+          google.script.run
+            .withSuccessHandler((result) => {
+              statusEl.className = 'status success';
+              statusEl.textContent = result.message || 'Enviat correctament.';
+              form.reset();
+              button.disabled = false;
+              if (result.redirectUrl) {
+                redirectTo(result.redirectUrl);
+              }
+            })
+            .withFailureHandler((error) => {
+              statusEl.className = 'status error';
+              statusEl.textContent = error.message || String(error);
+              button.disabled = false;
+            })
+            .submitTeacherForm(payload);
+        } catch (error) {
+          statusEl.className = 'status error';
+          statusEl.textContent = error.message || String(error);
+          button.disabled = false;
+        }
+      });
+
+      async function buildPayload(formData) {
+        return {
+          photo: await fileToPayload(formData.get('photo')),
+          nom: formData.get('nom'),
+          cognoms: formData.get('cognoms'),
+          dni: formData.get('dni'),
+          dataNaixement: formData.get('dataNaixement'),
+          telefon: formData.get('telefon'),
+          compteXtec: formData.get('compteXtec'),
+          correuAlternatiu: formData.get('correuAlternatiu'),
+          adreca: formData.get('adreca'),
+          poblacio: formData.get('poblacio'),
+          especialitat: formData.get('especialitat'),
+          departament: formData.get('departament'),
+          nomenament: formData.get('nomenament'),
+          previsioReduccio: formData.get('previsioReduccio'),
+          motiuReduccio: formData.get('motiuReduccio'),
+          solicitudReduccio: await fileToPayload(formData.get('solicitudReduccio')),
+          jornada: formData.get('jornada'),
+          anysEnsenyament: formData.get('anysEnsenyament'),
+          anysInstitut: formData.get('anysInstitut'),
+          aficions: formData.get('aficions')
+        };
+      }
+
+      function fileToPayload(file) {
+        if (!file || !file.name) return Promise.resolve(null);
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve({
+            name: file.name,
+            type: file.type,
+            dataUrl: reader.result
+          });
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function redirectTo(url) {
+        try {
+          window.top.location.replace(url);
+        } catch (error) {
+          window.location.replace(url);
+        }
+      }
+    </script>
+  </body>
+</html>

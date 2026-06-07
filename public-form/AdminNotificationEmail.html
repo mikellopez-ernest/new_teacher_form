@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <body style="font-family: Arial, Helvetica, sans-serif; color: #202124; line-height: 1.5;">
+    <h2 style="font-weight: 500;">Nova fitxa de professorat enviada</h2>
+    <p>S'ha rebut una nova fitxa de professorat.</p>
+    <table cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
+      <tr><td><strong>Nom</strong></td><td><?= submission.nom ?> <?= submission.cognoms ?></td></tr>
+      <tr><td><strong>DNI</strong></td><td><?= submission.dni ?></td></tr>
+      <tr><td><strong>Departament</strong></td><td><?= submission.departament ?></td></tr>
+      <tr><td><strong>Nomenament</strong></td><td><?= submission.nomenament ?></td></tr>
+      <tr><td><strong>Jornada</strong></td><td><?= submission.jornada ?></td></tr>
+      <tr><td><strong>Correu suggerit</strong></td><td><?= submission.suggestedEmail ?></td></tr>
+    </table>
+  </body>
+</html>

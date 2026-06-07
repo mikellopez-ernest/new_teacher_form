@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <body style="font-family: Arial, Helvetica, sans-serif; color: #202124; line-height: 1.5;">
+    <h2 style="font-weight: 500;">Nou compte de Google Workspace</h2>
+    <p>Hola <?= account.nom ?>,</p>
+    <p>S'ha creat el teu compte de Google Workspace de l'institut.</p>
+    <table cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
+      <tr><td><strong>Usuari</strong></td><td><?= account.username ?></td></tr>
+      <tr><td><strong>Contrasenya inicial</strong></td><td><?= account.password ?></td></tr>
+    </table>
+    <p>En el primer accés caldrà canviar la contrasenya.</p>
+  </body>
+</html>

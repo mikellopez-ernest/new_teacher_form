@@ -1,0 +1,2480 @@
+{
+  "count": 248,
+  "groups": [
+    {
+      "id": "AFA",
+      "name": "AFA",
+      "tag": "AFA",
+      "parent": "ALL",
+      "types": [
+        "parents"
+      ]
+    },
+    {
+      "id": "BAT",
+      "name": "Batxillerat",
+      "tag": "Batxillerat",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-1R-",
+      "name": "1r BAT",
+      "tag": "Batxillerat:1r BAT",
+      "parent": "BAT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BATX 1r A",
+      "name": "1r BAT A",
+      "tag": "Batxillerat:1r BAT:1r BAT A",
+      "parent": "BAT-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-1R--1R--1R-",
+      "name": "1r BAT A-1",
+      "tag": "Batxillerat:1r BAT:1r BAT A:1r BAT A-1",
+      "parent": "BATX 1r A",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-1R--1R--1R-0",
+      "name": "1r BAT A-2",
+      "tag": "Batxillerat:1r BAT:1r BAT A:1r BAT A-2",
+      "parent": "BATX 1r A",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BATX 1r B",
+      "name": "1r BAT B",
+      "tag": "Batxillerat:1r BAT:1r BAT B",
+      "parent": "BAT-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-1R--1R--1R-1",
+      "name": "1r BAT B-1",
+      "tag": "Batxillerat:1r BAT:1r BAT B:1r BAT B-1",
+      "parent": "BATX 1r B",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-1R--1R--1R-2",
+      "name": "1r BAT B-2",
+      "tag": "Batxillerat:1r BAT:1r BAT B:1r BAT B-2",
+      "parent": "BATX 1r B",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-1R--OPT",
+      "name": "Optatives 1BAT",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT",
+      "parent": "BAT-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Economia 1",
+      "name": "OPTBAT1.1 Economia 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.1 Economia 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Grec 1",
+      "name": "OPTBAT1.1 Grec 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.1 Grec 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Matemàtiques 1",
+      "name": "OPTBAT1.1 Matemàtiques 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.1 Matemàtiques 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Física 1",
+      "name": "OPTBAT1.2 Física 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.2 Física 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT1.2 Geologia i ciències ambientals",
+      "name": "OPTBAT1.2 Geologia i ciències ambientals",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.2 Geologia i ciències ambientals",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Llatí 1",
+      "name": "OPTBAT1.2 Llatí 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.2 Llatí 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Mates CS 1",
+      "name": "OPTBAT1.2 Matemàtiques Ciències Socials",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.2 Matemàtiques Ciències Socials",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 H. Món Contmp",
+      "name": "OPTBAT1.3 Història del mon contemporani",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.3 Història del mon contemporani",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Lit. Universal",
+      "name": "OPTBAT1.3 Literatura Universal",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.3 Literatura Universal",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Química 1",
+      "name": "OPTBAT1.3 Química 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.3 Química 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Tecn-enginy 1",
+      "name": "OPTBAT1.3 Tecnologia i Enginyeria 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.3 Tecnologia i Enginyeria 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Biomedicina",
+      "name": "OPTBAT1.4 Biomedicina",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.4 Biomedicina",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Dibuix tècnic",
+      "name": "OPTBAT1.4 Dibuix Tècnic",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.4 Dibuix Tècnic",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Francès",
+      "name": "OPTBAT1.4 Francès",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.4 Francès",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Func. empresa",
+      "name": "OPTBAT1.4 Funcionament de l'empresa",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.4 Funcionament de l'empresa",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Programació",
+      "name": "OPTBAT1.4 Programació",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.4 Programació",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Psicologia",
+      "name": "OPTBAT1.4 Psicologia i Sociologia",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.4 Psicologia i Sociologia",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Creació lit",
+      "name": "OPTBAT1.5 Creació literària",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.5 Creació literària",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Mat APLIC",
+      "name": "OPTBAT1.5 Matemàtica aplicada",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.5 Matemàtica aplicada",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Món clàssic",
+      "name": "OPTBAT1.5 Món clàssic",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.5 Món clàssic",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Problem. socials",
+      "name": "OPTBAT1.5 Problemàtiques socials",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.5 Problemàtiques socials",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Reptes BIO-GEO",
+      "name": "OPTBAT1.5 Reptes científics actuals (Biologia i Geologia)",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.5 Reptes científics actuals (Biologia i Geologia)",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT1.6 Biologia 1",
+      "name": "OPTBAT1.6 Biologia 1",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.6 Biologia 1",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Ciutadania pol. dret",
+      "name": "OPTBAT1.6 Ciutadania, Política i Dret",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.6 Ciutadania, Política i Dret",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Com. audiovisual",
+      "name": "OPTBAT1.6 Comunicació Audiovisual",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.6 Comunicació Audiovisual",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT1.6 Formació i orientació professional i personal",
+      "name": "OPTBAT1.6 Formació i orientació professional i personal",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.6 Formació i orientació professional i personal",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Reptes FIS-QUI",
+      "name": "OPTBAT1.6 Reptes científics actuals (Física i Química)",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.6 Reptes científics actuals (Física i Química)",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT1 Robòtica",
+      "name": "OPTBAT1.6 Robòtica",
+      "tag": "Batxillerat:1r BAT:Optatives 1BAT:OPTBAT1.6 Robòtica",
+      "parent": "BAT-1R--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-2N-",
+      "name": "2n BAT",
+      "tag": "Batxillerat:2n BAT",
+      "parent": "BAT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BATX 2n A",
+      "name": "2n BAT A",
+      "tag": "Batxillerat:2n BAT:2n BAT A",
+      "parent": "BAT-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-2N--2N--2N-",
+      "name": "2n BAT A-1",
+      "tag": "Batxillerat:2n BAT:2n BAT A:2n BAT A-1",
+      "parent": "BATX 2n A",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-2N--2N--2N-0",
+      "name": "2n BAT A-2",
+      "tag": "Batxillerat:2n BAT:2n BAT A:2n BAT A-2",
+      "parent": "BATX 2n A",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BATX 2n B",
+      "name": "2n BAT B",
+      "tag": "Batxillerat:2n BAT:2n BAT B",
+      "parent": "BAT-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-2N--2N--2N-1",
+      "name": "2n BAT B-1",
+      "tag": "Batxillerat:2n BAT:2n BAT B:2n BAT B-1",
+      "parent": "BATX 2n B",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-2N--2N--2N-2",
+      "name": "2n BAT B-2",
+      "tag": "Batxillerat:2n BAT:2n BAT B:2n BAT B-2",
+      "parent": "BATX 2n B",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT-2N--OPT",
+      "name": "Optatives 2BAT",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT",
+      "parent": "BAT-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Geogr",
+      "name": "OPTBAT2.1 Geografia",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.1 Geografia",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Lit. Cast",
+      "name": "OPTBAT2.1 Literatura Castellana",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.1 Literatura Castellana",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Mat 2",
+      "name": "OPTBAT2.1 Matemàtiques 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.1 Matemàtiques 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Física 2",
+      "name": "OPTBAT2.2 Física 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.2 Física 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Geologia i ciencies 2",
+      "name": "OPTBAT2.2 Geologia i ciencies  2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.2 Geologia i ciencies  2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Llatí 2",
+      "name": "OPTBAT2.2 Llatí 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.2 Llatí 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Mat ap. C. S. 2",
+      "name": "OPTBAT2.2 Matemàtiques Ciències Socials 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.2 Matemàtiques Ciències Socials 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Dib Tèc 2",
+      "name": "OPTBAT2.3 Dibuix Tècnic 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.3 Dibuix Tècnic 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 H. Art",
+      "name": "OPTBAT2.3 Història de l'Art",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.3 Història de l'Art",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Lit. Cat",
+      "name": "OPTBAT2.3 Literatura Catalana",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.3 Literatura Catalana",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Quím 2",
+      "name": "OPTBAT2.3 Química 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.3 Química 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Bio 2",
+      "name": "OPTBAT2.4 Biologia 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.4 Biologia 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Func. d'empr. 2",
+      "name": "OPTBAT2.4 Economia d'empresa 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.4 Economia d'empresa 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 Grec 2",
+      "name": "OPTBAT2.4 Grec 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.4 Grec 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "BAT2 T. Indust. 2",
+      "name": "OPTBAT2.4 Tecnologia Industrial 2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.4 Tecnologia Industrial 2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT2.5 TREC1",
+      "name": "OPTBAT2.5 TREC1",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.5 TREC1",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT2.5 TREC2",
+      "name": "OPTBAT2.5 TREC2",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.5 TREC2",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT2.5 TREC3",
+      "name": "OPTBAT2.5 TREC3",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.5 TREC3",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT2.5 TREC4",
+      "name": "OPTBAT2.5 TREC4",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.5 TREC4",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT2.5 TREC5",
+      "name": "OPTBAT2.5 TREC5",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.5 TREC5",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "OPTBAT2.5 TREC6",
+      "name": "OPTBAT2.5 TREC6",
+      "tag": "Batxillerat:2n BAT:Optatives 2BAT:OPTBAT2.5 TREC6",
+      "parent": "BAT-2N--OPT",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "Beques_MEC",
+      "name": "Beques MEC",
+      "tag": "Beques MEC",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC",
+      "name": "Cicles formatius",
+      "tag": "Cicles formatius",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-AC",
+      "name": "AC",
+      "tag": "Cicles formatius:AC",
+      "parent": "CIC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "AC 1r",
+      "name": "1r AC",
+      "tag": "Cicles formatius:AC:1r AC",
+      "parent": "CIC-AC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-AC-1R--1R-",
+      "name": "1r AC A",
+      "tag": "Cicles formatius:AC:1r AC:1r AC A",
+      "parent": "AC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-AC-1R--1R-0",
+      "name": "1r AC B",
+      "tag": "Cicles formatius:AC:1r AC:1r AC B",
+      "parent": "AC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "AC 2n",
+      "name": "2n AC",
+      "tag": "Cicles formatius:AC:2n AC",
+      "parent": "CIC-AC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC",
+      "name": "PCC",
+      "tag": "Cicles formatius:PCC",
+      "parent": "CIC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PCC 1r",
+      "name": "1r PCC",
+      "tag": "Cicles formatius:PCC:1r PCC",
+      "parent": "CIC-PCC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0156",
+      "name": "0156 Anglès professional",
+      "tag": "Cicles formatius:PCC:1r PCC:0156 Anglès professional",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0636",
+      "name": "0636 Estètica de mans i peus",
+      "tag": "Cicles formatius:PCC:1r PCC:0636 Estètica de mans i peus",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-063-0636A",
+      "name": "0636 Estètica de mans i peus A",
+      "tag": "Cicles formatius:PCC:1r PCC:0636 Estètica de mans i peus:0636 Estètica de mans i peus A",
+      "parent": "CIC-PCC-1ER-0636",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-063-0636B",
+      "name": "0636 Estètica de mans i peus B",
+      "tag": "Cicles formatius:PCC:1r PCC:0636 Estètica de mans i peus:0636 Estètica de mans i peus B",
+      "parent": "CIC-PCC-1ER-0636",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0640",
+      "name": "0640 Imatge corporal i hàbits saludables",
+      "tag": "Cicles formatius:PCC:1r PCC:0640 Imatge corporal i hàbits saludables",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0842",
+      "name": "0842 Pentinats i recollits",
+      "tag": "Cicles formatius:PCC:1r PCC:0842 Pentinats i recollits",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-084-0842A",
+      "name": "0842 Pentinats i recollits  A",
+      "tag": "Cicles formatius:PCC:1r PCC:0842 Pentinats i recollits:0842 Pentinats i recollits  A",
+      "parent": "CIC-PCC-1ER-0842",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-084-0842B",
+      "name": "0842 Pentinats i recollits B",
+      "tag": "Cicles formatius:PCC:1r PCC:0842 Pentinats i recollits:0842 Pentinats i recollits B",
+      "parent": "CIC-PCC-1ER-0842",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0843",
+      "name": "0843 Coloració capil·lar",
+      "tag": "Cicles formatius:PCC:1r PCC:0843 Coloració capil·lar",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-084-0843A",
+      "name": "0843 Coloració capi·lar A",
+      "tag": "Cicles formatius:PCC:1r PCC:0843 Coloració capil·lar:0843 Coloració capi·lar A",
+      "parent": "CIC-PCC-1ER-0843",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-084-0843B",
+      "name": "0843 Coloració capil·lar B",
+      "tag": "Cicles formatius:PCC:1r PCC:0843 Coloració capil·lar:0843 Coloració capil·lar B",
+      "parent": "CIC-PCC-1ER-0843",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0844",
+      "name": "0844 Cosmètica per  a perruqueria",
+      "tag": "Cicles formatius:PCC:1r PCC:0844 Cosmètica per  a perruqueria",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-0846",
+      "name": "0846 Canvis de forma permanent del cabell",
+      "tag": "Cicles formatius:PCC:1r PCC:0846 Canvis de forma permanent del cabell",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-084-0846A",
+      "name": "0846 Canvis de forma permanent del cabell A",
+      "tag": "Cicles formatius:PCC:1r PCC:0846 Canvis de forma permanent del cabell:0846 Canvis de forma permanent del cabell A",
+      "parent": "CIC-PCC-1ER-0846",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-084-0846B",
+      "name": "0846 Canvis de forma permanent del cabell B",
+      "tag": "Cicles formatius:PCC:1r PCC:0846 Canvis de forma permanent del cabell:0846 Canvis de forma permanent del cabell B",
+      "parent": "CIC-PCC-1ER-0846",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-1664",
+      "name": "1664 Digitalització aplicada al sector productiu",
+      "tag": "Cicles formatius:PCC:1r PCC:1664 Digitalització aplicada al sector productiu",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-1708",
+      "name": "1708 Sostenibilitat aplicada al sistema productiu",
+      "tag": "Cicles formatius:PCC:1r PCC:1708 Sostenibilitat aplicada al sistema productiu",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-1ER-1709",
+      "name": "1709 Itinerari per l'ocupabilitat I",
+      "tag": "Cicles formatius:PCC:1r PCC:1709 Itinerari per l'ocupabilitat I",
+      "parent": "PCC 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PCC 2n",
+      "name": "2n PCC",
+      "tag": "Cicles formatius:PCC:2n PCC",
+      "parent": "CIC-PCC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-0643 ",
+      "name": "0643 Màrqueting i venda en imatge personal",
+      "tag": "Cicles formatius:PCC:2n PCC:0643 Màrqueting i venda en imatge personal",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-0845",
+      "name": "0845 Técniques de tallada del cabell",
+      "tag": "Cicles formatius:PCC:2n PCC:0845 Técniques de tallada del cabell",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N--0845-0845A",
+      "name": "0845 Tècniques de tallada del cabell A",
+      "tag": "Cicles formatius:PCC:2n PCC:0845 Técniques de tallada del cabell:0845 Tècniques de tallada del cabell A",
+      "parent": "CIC-PCC-2N-0845",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N--0845-0845B",
+      "name": "0845 Tècniques de tallada del cabell B",
+      "tag": "Cicles formatius:PCC:2n PCC:0845 Técniques de tallada del cabell:0845 Tècniques de tallada del cabell B",
+      "parent": "CIC-PCC-2N-0845",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-0848",
+      "name": "0848 Perruqueria i estilisme masculí",
+      "tag": "Cicles formatius:PCC:2n PCC:0848 Perruqueria i estilisme masculí",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-0848A",
+      "name": "0848 Perruqueria i estilisme masculí A",
+      "tag": "Cicles formatius:PCC:2n PCC:0848 Perruqueria i estilisme masculí:0848 Perruqueria i estilisme masculí A",
+      "parent": "CIC-PCC-2N-0848",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-0848B",
+      "name": "0848 Perruqueria i estilisme masculí B",
+      "tag": "Cicles formatius:PCC:2n PCC:0848 Perruqueria i estilisme masculí:0848 Perruqueria i estilisme masculí B",
+      "parent": "CIC-PCC-2N-0848",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-0849",
+      "name": "0849 Anàlisi capil·lar",
+      "tag": "Cicles formatius:PCC:2n PCC:0849 Anàlisi capil·lar",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-1710",
+      "name": "1710 Itinerari per a l'ocupabilitat II",
+      "tag": "Cicles formatius:PCC:2n PCC:1710 Itinerari per a l'ocupabilitat II",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-1713",
+      "name": "1713 Projecte intermodular",
+      "tag": "Cicles formatius:PCC:2n PCC:1713 Projecte intermodular",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-1713-1713A",
+      "name": "1713 Projecte intermodular A",
+      "tag": "Cicles formatius:PCC:2n PCC:1713 Projecte intermodular:1713 Projecte intermodular A",
+      "parent": "CIC-PCC-2N-1713",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-1713-1713B",
+      "name": "1713 Projecte intermodular B",
+      "tag": "Cicles formatius:PCC:2n PCC:1713 Projecte intermodular:1713 Projecte intermodular B",
+      "parent": "CIC-PCC-2N-1713",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PCC 2n-EE",
+      "name": "Estada Empresa",
+      "tag": "Cicles formatius:PCC:2n PCC:Estada Empresa",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-MO",
+      "name": "Mòdul Optatiu",
+      "tag": "Cicles formatius:PCC:2n PCC:Mòdul Optatiu",
+      "parent": "PCC 2n",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-MOB",
+      "name": "Mòdul Optaiu B",
+      "tag": "Cicles formatius:PCC:2n PCC:Mòdul Optatiu:Mòdul Optaiu B",
+      "parent": "CIC-PCC-2N-MO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-PCC-2N-MOA",
+      "name": "Mòdul Optatiu A",
+      "tag": "Cicles formatius:PCC:2n PCC:Mòdul Optatiu:Mòdul Optatiu A",
+      "parent": "CIC-PCC-2N-MO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-SMX",
+      "name": "SMX",
+      "tag": "Cicles formatius:SMX",
+      "parent": "CIC",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "SMX 1r",
+      "name": "1r SMX",
+      "tag": "Cicles formatius:SMX:1r SMX",
+      "parent": "CIC-SMX",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-SMX-1R--1R-",
+      "name": "1r SMX A",
+      "tag": "Cicles formatius:SMX:1r SMX:1r SMX A",
+      "parent": "SMX 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CIC-SMX-1R--1R-0",
+      "name": "1r SMX B",
+      "tag": "Cicles formatius:SMX:1r SMX:1r SMX B",
+      "parent": "SMX 1r",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "SMX 2n",
+      "name": "2n SMX",
+      "tag": "Cicles formatius:SMX:2n SMX",
+      "parent": "CIC-SMX",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA",
+      "name": "Claustre",
+      "tag": "Claustre",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-CAP",
+      "name": "Caps Departament",
+      "tag": "Claustre:Caps Departament",
+      "parent": "CLA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-COO",
+      "name": "Coordinadors",
+      "tag": "Claustre:Coordinadors",
+      "parent": "CLA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP",
+      "name": "Departaments",
+      "tag": "Claustre:Departaments",
+      "parent": "CLA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-ANG",
+      "name": "Anglès",
+      "tag": "Claustre:Departaments:Anglès",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-CAS",
+      "name": "Castellà",
+      "tag": "Claustre:Departaments:Castellà",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-CAT",
+      "name": "Català",
+      "tag": "Claustre:Departaments:Català",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-CIE0",
+      "name": "Ciències",
+      "tag": "Claustre:Departaments:Ciències",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-CIE",
+      "name": "Ciències Socials",
+      "tag": "Claustre:Departaments:Ciències Socials",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-COM",
+      "name": "Comerç",
+      "tag": "Claustre:Departaments:Comerç",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-EDU",
+      "name": "Educacio Física",
+      "tag": "Claustre:Departaments:Educacio Física",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-EXP",
+      "name": "Expressió",
+      "tag": "Claustre:Departaments:Expressió",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-IMA",
+      "name": "Imatge Personal",
+      "tag": "Claustre:Departaments:Imatge Personal",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-IMA-NOU",
+      "name": "Nou grup",
+      "tag": "Claustre:Departaments:Imatge Personal:Nou grup",
+      "parent": "CLA-DEP-IMA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-IMA-NOU-NOU",
+      "name": "Nou grup",
+      "tag": "Claustre:Departaments:Imatge Personal:Nou grup:Nou grup",
+      "parent": "CLA-DEP-IMA-NOU",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-INF",
+      "name": "Informàtica",
+      "tag": "Claustre:Departaments:Informàtica",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-MAT",
+      "name": "Matemàtiques",
+      "tag": "Claustre:Departaments:Matemàtiques",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-PSI",
+      "name": "Psicopedagogia",
+      "tag": "Claustre:Departaments:Psicopedagogia",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-DEP-TEC",
+      "name": "Tecnologia",
+      "tag": "Claustre:Departaments:Tecnologia",
+      "parent": "CLA-DEP",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-ORI",
+      "name": "Orientació",
+      "tag": "Claustre:Orientació",
+      "parent": "CLA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-PRO",
+      "name": "Professors",
+      "tag": "Claustre:Professors",
+      "parent": "CLA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "CLA-TUT",
+      "name": "Tutors",
+      "tag": "Claustre:Tutors",
+      "parent": "CLA",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "COT",
+      "name": "Cotutoria",
+      "tag": "Cotutoria",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "DIM",
+      "name": "Dimarts tarda",
+      "tag": "Dimarts tarda",
+      "parent": "ALL",
+      "types": [
+        "parents"
+      ]
+    },
+    {
+      "id": "EQU",
+      "name": "Equip directiu",
+      "tag": "Equip directiu",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO",
+      "name": "ESO",
+      "tag": "ESO",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-1R-",
+      "name": "1r ESO",
+      "tag": "ESO:1r ESO",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-1R-0",
+      "name": "1r ESO COLÒNIES",
+      "tag": "ESO:1r ESO COLÒNIES",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1r ESO A",
+      "name": "1A",
+      "tag": "ESO:1r ESO:1A",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1r ESO B",
+      "name": "1B",
+      "tag": "ESO:1r ESO:1B",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1r ESO C",
+      "name": "1C",
+      "tag": "ESO:1r ESO:1C",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1r ESO D",
+      "name": "1D",
+      "tag": "ESO:1r ESO:1D",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1r ESO E",
+      "name": "1E",
+      "tag": "ESO:1r ESO:1E",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1r ESO F",
+      "name": "1F",
+      "tag": "ESO:1r ESO:1F",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1CUL",
+      "name": "Cultura i Valors Ètics 1A",
+      "tag": "ESO:1r ESO:Cultura i Valors Ètics 1A",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": null,
+      "name": "Nou grup",
+      "tag": "ESO:1r ESO:Nou grup",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": null,
+      "name": "Nou grup",
+      "tag": "ESO:1r ESO:Nou grup:Nou grup",
+      "parent": null,
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "1REL",
+      "name": "Religió 1r",
+      "tag": "ESO:1r ESO:Religió 1r",
+      "parent": "ESO-1R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-2N-",
+      "name": "2n ESO",
+      "tag": "ESO:2n ESO",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n ESO A",
+      "name": "2A",
+      "tag": "ESO:2n ESO:2A",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n ESO B",
+      "name": "2B",
+      "tag": "ESO:2n ESO:2B",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n ESO C",
+      "name": "2C",
+      "tag": "ESO:2n ESO:2C",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n ESO D",
+      "name": "2D",
+      "tag": "ESO:2n ESO:2D",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n ESO E",
+      "name": "2E",
+      "tag": "ESO:2n ESO:2E",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n ESO F",
+      "name": "2F",
+      "tag": "ESO:2n ESO:2F",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": null,
+      "name": "Nou grup",
+      "tag": "ESO:2n ESO:2F:Nou grup",
+      "parent": "2n ESO F",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-2N--CUL",
+      "name": "Cultura i valors ètics 2n A",
+      "tag": "ESO:2n ESO:Cultura i valors ètics 2n A",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n Digitalització 1",
+      "name": "OPT2.1-Digitalització 1",
+      "tag": "ESO:2n ESO:OPT2.1-Digitalització 1",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n Digitalització 2",
+      "name": "OPT2.1-Digitalització 2",
+      "tag": "ESO:2n ESO:OPT2.1-Digitalització 2",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n Digitalització 3",
+      "name": "OPT2.1-Digitalització 3",
+      "tag": "ESO:2n ESO:OPT2.1-Digitalització 3",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n Francès 1",
+      "name": "OPT2.1-Francès 1",
+      "tag": "ESO:2n ESO:OPT2.1-Francès 1",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2n Francès 2",
+      "name": "OPT2.1-Francès 2",
+      "tag": "ESO:2n ESO:OPT2.1-Francès 2",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "2REL",
+      "name": "Religió 2n",
+      "tag": "ESO:2n ESO:Religió 2n",
+      "parent": "ESO-2N-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-3R-",
+      "name": "3r ESO",
+      "tag": "ESO:3r ESO",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r ESO A",
+      "name": "3A",
+      "tag": "ESO:3r ESO:3A",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r ESO B",
+      "name": "3B",
+      "tag": "ESO:3r ESO:3B",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r ESO C",
+      "name": "3C",
+      "tag": "ESO:3r ESO:3C",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r ESO D",
+      "name": "3D",
+      "tag": "ESO:3r ESO:3D",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r ESO E",
+      "name": "3E",
+      "tag": "ESO:3r ESO:3E",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r ESO F",
+      "name": "3F",
+      "tag": "ESO:3r ESO:3F",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-3R--3RA",
+      "name": "3rA - Castellano",
+      "tag": "ESO:3r ESO:3rA - Castellano",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-3R--3RB",
+      "name": "3rB - Castellano",
+      "tag": "ESO:3r ESO:3rB - Castellano",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-3R--3RC",
+      "name": "3rC - Castellano",
+      "tag": "ESO:3r ESO:3rC - Castellano",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-3R--3RD",
+      "name": "3rD - Castellano",
+      "tag": "ESO:3r ESO:3rD - Castellano",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-3R--3RE",
+      "name": "3rE - Castellano",
+      "tag": "ESO:3r ESO:3rE - Castellano",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3CUL",
+      "name": "Cultura i Valors 3rA",
+      "tag": "ESO:3r ESO:Cultura i Valors 3rA",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Art i Creativitat",
+      "name": "OPT3.1- Art i creativitat",
+      "tag": "ESO:3r ESO:OPT3.1- Art i creativitat",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Ciència en acció",
+      "name": "OPT3.1- Ciència en acció",
+      "tag": "ESO:3r ESO:OPT3.1- Ciència en acció",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Ll. i cult. clàssica",
+      "name": "OPT3.1- Cultura clàssica",
+      "tag": "ESO:3r ESO:OPT3.1- Cultura clàssica",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Emprenedoria 1",
+      "name": "OPT3.1- Emprenedoria 1",
+      "tag": "ESO:3r ESO:OPT3.1- Emprenedoria 1",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Emprenedoria 2",
+      "name": "OPT3.1- Emprenedoria 2",
+      "tag": "ESO:3r ESO:OPT3.1- Emprenedoria 2",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Francès",
+      "name": "OPT3.1- Francès",
+      "tag": "ESO:3r ESO:OPT3.1- Francès",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Literatura i cine",
+      "name": "OPT3.1- Literatura i cine",
+      "tag": "ESO:3r ESO:OPT3.1- Literatura i cine",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3r Robòtica",
+      "name": "OPT3.1- Robòtica",
+      "tag": "ESO:3r ESO:OPT3.1- Robòtica",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "3REL",
+      "name": "Religió 3r",
+      "tag": "ESO:3r ESO:Religió 3r",
+      "parent": "ESO-3R-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-4T-",
+      "name": "4t ESO",
+      "tag": "ESO:4t ESO",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ESO A",
+      "name": "4A",
+      "tag": "ESO:4t ESO:4A",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ESO B",
+      "name": "4B",
+      "tag": "ESO:4t ESO:4B",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ESO C",
+      "name": "4C",
+      "tag": "ESO:4t ESO:4C",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ESO D",
+      "name": "4D",
+      "tag": "ESO:4t ESO:4D",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ESO E",
+      "name": "4E",
+      "tag": "ESO:4t ESO:4E",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ESO F",
+      "name": "4F",
+      "tag": "ESO:4t ESO:4F",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-4T--DES",
+      "name": "DESC-OBRE",
+      "tag": "ESO:4t ESO:DESC-OBRE",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": null,
+      "name": "Nou grup",
+      "tag": "ESO:4t ESO:Nou grup",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Econ1",
+      "name": "OPT4.1 Economia1",
+      "tag": "ESO:4t ESO:OPT4.1 Economia1",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Econ2",
+      "name": "OPT4.1 Economia2",
+      "tag": "ESO:4t ESO:OPT4.1 Economia2",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Econ3",
+      "name": "OPT4.1 Economia3",
+      "tag": "ESO:4t ESO:OPT4.1 Economia3",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t FiQ1",
+      "name": "OPT4.1 Fisica i Química1",
+      "tag": "ESO:4t ESO:OPT4.1 Fisica i Química1",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t FiQ2",
+      "name": "OPT4.1 Física i Química2",
+      "tag": "ESO:4t ESO:OPT4.1 Física i Química2",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-4T--OPT0",
+      "name": "OPT4.1 Física i Química3",
+      "tag": "ESO:4t ESO:OPT4.1 Física i Química3",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Llatí",
+      "name": "OPT4.1 Llatí",
+      "tag": "ESO:4t ESO:OPT4.1 Llatí",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t BiG1",
+      "name": "OPT4.2 Biologia i Geologia 1",
+      "tag": "ESO:4t ESO:OPT4.2 Biologia i Geologia 1",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t BiG2",
+      "name": "OPT4.2 Biologia i Geologia 2",
+      "tag": "ESO:4t ESO:OPT4.2 Biologia i Geologia 2",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Filos",
+      "name": "OPT4.2 Filosofia",
+      "tag": "ESO:4t ESO:OPT4.2 Filosofia",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Revista",
+      "name": "OPT4.2 Revista",
+      "tag": "ESO:4t ESO:OPT4.2 Revista",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Tecno1",
+      "name": "OPT4.2 Tecnologia1",
+      "tag": "ESO:4t ESO:OPT4.2 Tecnologia1",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Tecno2",
+      "name": "OPT4.2 Tecnologia2",
+      "tag": "ESO:4t ESO:OPT4.2 Tecnologia2",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Tecno3",
+      "name": "OPT4.2 Tecnologia3",
+      "tag": "ESO:4t ESO:OPT4.2 Tecnologia3",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Inform1",
+      "name": "OPT4.3 Digitalització1",
+      "tag": "ESO:4t ESO:OPT4.3 Digitalització1",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Inform2",
+      "name": "OPT4.3 Digitalització2",
+      "tag": "ESO:4t ESO:OPT4.3 Digitalització2",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-4T--OPT",
+      "name": "OPT4.3 Digitalització3",
+      "tag": "ESO:4t ESO:OPT4.3 Digitalització3",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Francès",
+      "name": "OPT4.3 Francès",
+      "tag": "ESO:4t ESO:OPT4.3 Francès",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t Música",
+      "name": "OPT4.3 Música",
+      "tag": "ESO:4t ESO:OPT4.3 Música",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ViP1",
+      "name": "OPT4.3 Visual i plàstica1",
+      "tag": "ESO:4t ESO:OPT4.3 Visual i plàstica1",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4t ViP2",
+      "name": "OPT4.3 Visual i plàstica2",
+      "tag": "ESO:4t ESO:OPT4.3 Visual i plàstica2",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "4REL",
+      "name": "Religió 4t",
+      "tag": "ESO:4t ESO:Religió 4t",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-4T--VIA",
+      "name": "Viatge 4t ESO",
+      "tag": "ESO:4t ESO:Viatge 4t ESO",
+      "parent": "ESO-4T-",
+      "types": [
+        "parents"
+      ]
+    },
+    {
+      "id": "ACO",
+      "name": "Aula d'acollida",
+      "tag": "ESO:Aula d'acollida",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-COD",
+      "name": "COD. FLEX",
+      "tag": "ESO:COD. FLEX",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-COL",
+      "name": "COLÒNIES 2n ESO",
+      "tag": "ESO:COLÒNIES 2n ESO",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-COL0",
+      "name": "Colònies 3r",
+      "tag": "ESO:Colònies 3r",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "Cont",
+      "name": "Continuitat postobligatoria",
+      "tag": "ESO:Continuitat postobligatoria",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-NA",
+      "name": "NA",
+      "tag": "ESO:NA",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ESO-SIE",
+      "name": "SIEI",
+      "tag": "ESO:SIEI",
+      "parent": "ESO",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "FOR",
+      "name": "Formació famílies",
+      "tag": "Formació famílies",
+      "parent": "ALL",
+      "types": [
+        "parents"
+      ]
+    },
+    {
+      "id": "LACM",
+      "name": "LACM",
+      "tag": "LACM",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "LACM1",
+      "name": "LACM1",
+      "tag": "LACM:LACM1",
+      "parent": "LACM",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "LACM2",
+      "name": "LACM2",
+      "tag": "LACM:LACM2",
+      "parent": "LACM",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "MOTX",
+      "name": "Motxilles 25-26",
+      "tag": "Motxilles 25-26",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "MOTX1",
+      "name": "Motxilles 1ESO",
+      "tag": "Motxilles 25-26:Motxilles 1ESO",
+      "parent": "MOTX",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": null,
+      "name": "Nou grup",
+      "tag": "Motxilles 25-26:Motxilles 1ESO:Nou grup",
+      "parent": "MOTX1",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "MOTX2",
+      "name": "Motxilles 2ESO",
+      "tag": "Motxilles 25-26:Motxilles 2ESO",
+      "parent": "MOTX",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "MOTX3",
+      "name": "Motxilles 3ESO",
+      "tag": "Motxilles 25-26:Motxilles 3ESO",
+      "parent": "MOTX",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "MOTX4",
+      "name": "Motxilles 4ESO",
+      "tag": "Motxilles 25-26:Motxilles 4ESO",
+      "parent": "MOTX",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PAS",
+      "name": "PAS",
+      "tag": "PAS",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PAS-ADM",
+      "name": "Administració",
+      "tag": "PAS:Administració",
+      "parent": "PAS",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PAS-CON",
+      "name": "Consergeria",
+      "tag": "PAS:Consergeria",
+      "parent": "PAS",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PFI",
+      "name": "PFI",
+      "tag": "PFI",
+      "parent": "ALL",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PFI-GRU",
+      "name": "GRUP 1 PFI ",
+      "tag": "PFI:GRUP 1 PFI ",
+      "parent": "PFI",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "PFI-GRU0",
+      "name": "GRUP 2 PFI",
+      "tag": "PFI:GRUP 2 PFI",
+      "parent": "PFI",
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "ALL",
+      "name": "Tot el centre",
+      "tag": "Tot el centre",
+      "parent": null,
+      "types": [
+        "parents",
+        "students"
+      ]
+    },
+    {
+      "id": "VIA",
+      "name": "Viatge 4t ESO",
+      "tag": "Viatge 4t ESO",
+      "parent": "ALL",
+      "types": [
+        "parents"
+      ]
+    }
+  ]
+}
