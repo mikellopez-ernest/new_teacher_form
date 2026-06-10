@@ -183,6 +183,7 @@ function sendAdminNotification_(data, suggestedEmail) {
     jornada: clean_(data.jornada),
     suggestedEmail
   };
+  template.adminUrl = CONFIG.ADMIN_CONSOLE_URL || '';
   const htmlBody = template.evaluate().getContent();
 
   MailApp.sendEmail({

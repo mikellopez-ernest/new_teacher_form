@@ -266,6 +266,7 @@ function setupDinantiaCredentials(user, secret) {
 function syncDinantiaStaff_(form, institutionalEmail, options, shouldUpdate) {
   const dinantiaId = clean_(options.dinantiaId).toUpperCase();
   const generalGroupIds = normalizeGroupIds_(options.generalGroupIds);
+  const teacherGroupIds = normalizeGroupIds_(options.teacherGroupIds);
   const tutorGroupId = clean_(options.tutorGroupId);
 
   if (!dinantiaId) {
@@ -290,6 +291,10 @@ function syncDinantiaStaff_(form, institutionalEmail, options, shouldUpdate) {
   DINANTIA_CONFIG.GENERAL_GROUP_SCOPES.forEach((scope) => {
     groups[scope] = generalGroupIds;
   });
+
+  if (teacherGroupIds.length) {
+    groups.teacher = teacherGroupIds;
+  }
 
   if (tutorGroupId) {
     groups.tutor = [tutorGroupId];

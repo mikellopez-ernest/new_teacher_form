@@ -347,6 +347,12 @@
                 <div class="suggestions"></div>
                 <div class="chips"></div>
               </div>
+              <div class="group-picker teacher-picker">
+                <span class="muted">Professor de</span>
+                <input type="text" placeholder="Cerca grups de professor..." aria-label="Grups Professor de Dinantia">
+                <div class="suggestions"></div>
+                <div class="chips"></div>
+              </div>
               <div class="group-picker tutor-picker">
                 <span class="muted">Tutoria</span>
                 <input type="text" placeholder="Cerca grup tutor..." aria-label="Grup tutor Dinantia">
@@ -384,11 +390,15 @@
         const message = tr.querySelector('.row-message');
         const state = {
           generalGroupIds: [...(row.defaultDinantiaGeneralGroupIds || [])],
+          teacherGroupIds: [],
           tutorGroupId: ''
         };
         tr._dinantiaState = state;
 
         setupGroupPicker(tr.querySelector('.general-picker'), state.generalGroupIds, false);
+        setupGroupPicker(tr.querySelector('.teacher-picker'), state.teacherGroupIds, false, (ids) => {
+          state.teacherGroupIds = ids;
+        });
         setupGroupPicker(tr.querySelector('.tutor-picker'), [], true, (ids) => {
           state.tutorGroupId = ids[0] || '';
         });
@@ -403,6 +413,7 @@
             runAction(row.rowNumber, emailInput.value, {
               dinantiaId: dinantiaIdInput.value,
               generalGroupIds: state.generalGroupIds,
+              teacherGroupIds: state.teacherGroupIds,
               tutorGroupId: state.tutorGroupId
             }, actionButton, message);
           });

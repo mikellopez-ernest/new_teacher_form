@@ -11,5 +11,8 @@
       <tr><td><strong>Jornada</strong></td><td><?= submission.jornada ?></td></tr>
       <tr><td><strong>Correu suggerit</strong></td><td><?= submission.suggestedEmail ?></td></tr>
     </table>
+    <? if (adminUrl) { ?>
+      <p><a href="<?= adminUrl ?>">Obre la consola d'administració</a></p>
+    <? } ?>
   </body>
 </html>

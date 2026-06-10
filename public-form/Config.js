@@ -5,5 +5,6 @@ const CONFIG = {
   REDUCTION_UPLOAD_FOLDER_ID: '1JyphuC21DWvdahvKy8HEn6fQp-CNDjul',
   ADMIN_NOTIFICATION_SPREADSHEET_ID: '1eW91L6sWLs6cKg3AXi0spGc1vv6sYQ4jwiMvM-gK__E',
   WORKSPACE_DOMAIN: 'iernestlluch.cat',
-  AFTER_SUBMIT_REDIRECT_URL: 'https://agora.xtec.cat/sesernestlluch-cunit/'
+  AFTER_SUBMIT_REDIRECT_URL: 'https://agora.xtec.cat/sesernestlluch-cunit/',
+  ADMIN_CONSOLE_URL: ''
 };

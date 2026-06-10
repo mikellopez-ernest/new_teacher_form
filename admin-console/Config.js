@@ -19,6 +19,8 @@ const DINANTIA_CONFIG = {
     'newsletter',
     'wall',
     'view_students',
+    'managed',
+    'calendar',
     'member'
   ],
   STAFF_PERMISSIONS: ['attendances', 'attitude', 'messages', 'newsletter', 'wall'],

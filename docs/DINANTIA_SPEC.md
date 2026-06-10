@@ -264,6 +264,10 @@ Recommended sequence when admin clicks create/update:
 
 The form row should only be deleted after Google Workspace and Dinantia synchronization both succeed, unless we later decide Dinantia failures should be non-blocking.
 
+## Admin Notification Email
+
+The public form must include a link to the admin console in the notification email body, when `ADMIN_CONSOLE_URL` is configured in `public-form/Config.js`.
+
 ## Dinantia Account Identity
 
 Use the existing short-code style as the Dinantia account `id`.
@@ -410,6 +414,8 @@ groups: {
   newsletter: selectedGeneralGroupIds,
   wall: selectedGeneralGroupIds,
   view_students: selectedGeneralGroupIds,
+  managed: selectedGeneralGroupIds,
+  calendar: selectedGeneralGroupIds,
   member: selectedGeneralGroupIds
 };
 ```
@@ -424,6 +430,27 @@ permissions: [
   'newsletter',
   'wall'
 ]
+```
+
+Note: Dinantia currently rejects `payments` as a valid scope/permission value, so it cannot be applied via this integration.
+
+### Teacher Group Picker
+
+The admin UI must also provide a third searchable textbox labeled `Professor de` in the Dinantia section.
+
+Behavior:
+
+- Search by `id`, `name`, or `tag`.
+- Allow selecting multiple teacher groups.
+- Show selected teacher groups as removable chips.
+- The teacher groups are optional.
+- When creating/updating the Dinantia staff account, add:
+
+```js
+groups: {
+  ...,
+  teacher: selectedTeacherGroupIds
+};
 ```
 
 ### Tutor Group Picker
