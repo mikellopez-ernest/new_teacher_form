@@ -1,6 +1,6 @@
 # Project Context: New Teacher Form
 
-Use this file as the primary project memory before relying on conversation history.
+Use this file as the single source of truth for project memory and endpoint behavior.
 
 ## Project Shape
 
