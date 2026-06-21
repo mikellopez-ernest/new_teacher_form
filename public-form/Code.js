@@ -1,37 +1,3 @@
-const RESPONSE_HEADERS = [
-  'Timestamp',
-  'Status',
-  'Photo File ID',
-  'Photo URL',
-  'Nom',
-  'Cognoms',
-  'DNI',
-  'Data naixement',
-  'Telèfon de contacte',
-  'Compte @xtec',
-  'Compte de correu alternatiu',
-  'Adreça',
-  'Població',
-  'Especialitat',
-  'Departament',
-  'Nomenament',
-  'Previsió reducció jornada',
-  'Motiu reducció',
-  'Reducció File ID',
-  'Reducció File URL',
-  'Jornada',
-  'Anys a ensenyament',
-  "Anys a l'institut Ernest Lluch i Martín",
-  'Aficions',
-  'Suggested Google Email',
-  'Selected Google Email',
-  'Google User ID',
-  'Google User Action',
-  'Google User Status',
-  'Google User Updated At',
-  'Error'
-];
-
 function doGet() {
   return HtmlService.createTemplateFromFile('Form')
     .evaluate()
@@ -47,19 +13,19 @@ function submitTeacherForm(payload) {
     throw new Error(errors.join('\n'));
   }
 
-  const photo = saveUpload_(data.photo, CONFIG.PHOTO_UPLOAD_FOLDER_ID, data.dni, 'foto');
+  const photo = saveUpload_(data.photo, CONFIG.PHOTO_UPLOAD_FOLDER_ID, data.dni, UPLOAD_FIELD_KIND.PHOTO);
   const reduction = saveUpload_(
     data.solicitudReduccio,
     CONFIG.REDUCTION_UPLOAD_FOLDER_ID,
     data.dni,
-    'reduccio'
+    UPLOAD_FIELD_KIND.REDUCTION
   );
   const suggestedEmail = buildSuggestedEmail_(data.nom, data.cognoms);
   const sheet = getResponsesSheet_();
   ensureHeaders_(sheet, RESPONSE_HEADERS);
   sheet.appendRow([
     new Date(),
-    'Submitted',
+    FORM_STATUS.SUBMITTED,
     photo.id,
     photo.url,
     clean_(data.nom),
@@ -100,19 +66,7 @@ function submitTeacherForm(payload) {
 }
 
 function validateSubmission_(data) {
-  const required = [
-    ['photo', 'Fotografia'],
-    ['nom', 'Nom'],
-    ['cognoms', 'Cognoms'],
-    ['dni', 'DNI'],
-    ['telefon', 'Telèfon de contacte'],
-    ['especialitat', 'Especialitat'],
-    ['nomenament', 'Nomenament'],
-    ['previsioReduccio', 'Previsió de reducció de jornada'],
-    ['jornada', 'Jornada']
-  ];
-
-  return required
+  return FORM_REQUIRED_FIELDS
     .filter(([key]) => !hasValue_(data[key]))
     .map(([, label]) => `${label} és obligatori.`);
 }
@@ -154,13 +108,7 @@ function extensionFromMime_(mimeType, originalName) {
   const originalMatch = original.match(/\.[A-Za-z0-9]+$/);
   if (originalMatch) return originalMatch[0].toLowerCase();
 
-  const map = {
-    'image/jpeg': '.jpg',
-    'image/png': '.png',
-    'image/webp': '.webp',
-    'application/pdf': '.pdf'
-  };
-  return map[mimeType] || '';
+  return MIME_EXTENSION_MAP[mimeType] || '';
 }
 
 function getResponsesSheet_() {
@@ -173,7 +121,7 @@ function sendAdminNotification_(data, suggestedEmail) {
   const recipients = getAdminNotificationRecipients_();
   if (!recipients.length) return;
 
-  const template = HtmlService.createTemplateFromFile('AdminNotificationEmail');
+  const template = HtmlService.createTemplateFromFile(ADMIN_NOTIFICATION_CONFIG.TEMPLATE_FILE);
   template.submission = {
     nom: clean_(data.nom),
     cognoms: clean_(data.cognoms),
@@ -188,7 +136,7 @@ function sendAdminNotification_(data, suggestedEmail) {
 
   MailApp.sendEmail({
     to: recipients.join(','),
-    subject: `Nova fitxa de professorat: ${clean_(data.nom)} ${clean_(data.cognoms)}`.trim(),
+    subject: `${ADMIN_NOTIFICATION_CONFIG.SUBJECT_PREFIX}: ${clean_(data.nom)} ${clean_(data.cognoms)}`.trim(),
     htmlBody
   });
 }
@@ -203,7 +151,7 @@ function getAdminNotificationRecipients_() {
     if (values.length < 2) return;
 
     const headers = values[0].map((value) => clean_(value).toLowerCase());
-    const emailIndex = headers.indexOf('email');
+    const emailIndex = headers.indexOf(ADMIN_NOTIFICATION_CONFIG.EMAIL_COLUMN);
     if (emailIndex === -1) return;
 
     values.slice(1).forEach((row) => {

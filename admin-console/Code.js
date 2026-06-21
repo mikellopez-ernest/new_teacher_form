@@ -1,65 +1,11 @@
-const RESPONSE_HEADERS = [
-  'Timestamp',
-  'Status',
-  'Photo File ID',
-  'Photo URL',
-  'Nom',
-  'Cognoms',
-  'DNI',
-  'Data naixement',
-  'Telèfon de contacte',
-  'Compte @xtec',
-  'Compte de correu alternatiu',
-  'Adreça',
-  'Població',
-  'Especialitat',
-  'Departament',
-  'Nomenament',
-  'Previsió reducció jornada',
-  'Motiu reducció',
-  'Reducció File ID',
-  'Reducció File URL',
-  'Jornada',
-  'Anys a ensenyament',
-  "Anys a l'institut Ernest Lluch i Martín",
-  'Aficions',
-  'Suggested Google Email',
-  'Selected Google Email',
-  'Google User ID',
-  'Google User Action',
-  'Google User Status',
-  'Google User Updated At',
-  'Error'
-];
-
-const DATABASE_HEADERS = [
-  'ESP',
-  'DEPT.',
-  'NOM',
-  'COGNOM1',
-  'COGNOM2',
-  'BAIXA?',
-  'CÀRREC',
-  'CAP DEPT',
-  'COORD',
-  'TUTORIA',
-  'EQUIP',
-  'FANTASMA',
-  'SITUACIÓ',
-  'DNI',
-  'TELF',
-  'CORREU XTEC',
-  'CORREU INSTIT',
-  'NOUS',
-  'ACTIVE',
-  'Nom sencer'
-];
-
 function doGet() {
   try {
     requireAdmin_();
-    return HtmlService.createTemplateFromFile('Admin')
-      .evaluate()
+    const template = HtmlService.createTemplateFromFile('Admin');
+    template.clientConfig = JSON.stringify({
+      submittedStatus: FORM_RESPONSE_STATUS.SUBMITTED
+    });
+    return template.evaluate()
       .setTitle('Gestió professorat')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   } catch (error) {
@@ -194,13 +140,13 @@ function createOrUpdateGoogleUser(rowNumber, selectedEmail, dinantiaOptions) {
   }
 
   let result;
-  const action = shouldUpdate ? 'Updated' : 'Created';
+  const action = shouldUpdate ? ACCOUNT_CONFIG.UPDATED_ACTION : ACCOUNT_CONFIG.CREATED_ACTION;
 
   try {
     result = shouldUpdate
       ? updateGoogleUser_(existingKnownUser.primaryEmail, form, requestedEmail)
       : createGoogleUser_(form, requestedEmail);
-    statuses.google = { ok: true, message: `Google user ${action === 'Created' ? 'created' : 'updated'} correctly.` };
+    statuses.google = { ok: true, message: `Google user ${action === ACCOUNT_CONFIG.CREATED_ACTION ? 'created' : 'updated'} correctly.` };
   } catch (error) {
     statuses.google = { ok: false, message: `Google user not created correctly. ${error.message || String(error)}` };
     return markResponseError_(rowNumber, formatSyncStatuses_(statuses), statuses);
@@ -218,14 +164,14 @@ function createOrUpdateGoogleUser(rowNumber, selectedEmail, dinantiaOptions) {
   let dinantiaResult;
   try {
     dinantiaResult = syncDinantiaStaff_(form, requestedEmail, options, shouldUpdate);
-    statuses.dinantia = { ok: true, message: `Dinantia user ${action === 'Created' ? 'created' : 'updated'} correctly.` };
+    statuses.dinantia = { ok: true, message: `Dinantia user ${action === ACCOUNT_CONFIG.CREATED_ACTION ? 'created' : 'updated'} correctly.` };
   } catch (error) {
     statuses.dinantia = { ok: false, message: `Dinantia user not created correctly. ${error.message || String(error)}` };
     return markResponseError_(rowNumber, formatSyncStatuses_(statuses), statuses);
   }
 
   markResponseSuccess_(rowNumber, result.id || result.primaryEmail || requestedEmail, action, requestedEmail);
-  if (action === 'Created') {
+  if (action === ACCOUNT_CONFIG.CREATED_ACTION) {
     sendUserCreatedEmail_(form, requestedEmail);
   }
   getResponsesSheet_().deleteRow(Number(rowNumber));
@@ -256,8 +202,8 @@ function setupDinantiaCredentials(user, secret) {
   }
 
   PropertiesService.getScriptProperties().setProperties({
-    DINANTIA_USER: String(user),
-    DINANTIA_SECRET: String(secret)
+    [DINANTIA_CONFIG.SCRIPT_PROPERTIES.USER]: String(user),
+    [DINANTIA_CONFIG.SCRIPT_PROPERTIES.SECRET]: String(secret)
   });
 
   return 'Credencials de Dinantia configurades.';
@@ -307,13 +253,13 @@ function syncDinantiaStaff_(form, institutionalEmail, options, shouldUpdate) {
     phone: normalizeSpanishPhone_(form['Telèfon de contacte']) || undefined,
     gender: DINANTIA_CONFIG.DEFAULT_GENDER,
     language: DINANTIA_CONFIG.DEFAULT_LANGUAGE,
-    roles: ['Staff'],
+    roles: [ACCOUNT_CONFIG.DINANTIA_STAFF_ROLE],
     groups,
     permissions: DINANTIA_CONFIG.STAFF_PERMISSIONS,
     fields: []
   };
 
-  const response = dinantiaRequest_('post', '/api/web/v1/accounts/update', payload);
+  const response = dinantiaRequest_('post', DINANTIA_CONFIG.API_PATHS.ACCOUNT_UPDATE, payload);
   if (!response || !response.data) {
     throw new Error('Dinantia no ha retornat dades de l\'usuari creat.');
   }
@@ -330,7 +276,7 @@ function createGoogleUser_(form, email) {
       familyName: clean_(form.Cognoms)
     },
     password: CONFIG.INITIAL_PASSWORD,
-    changePasswordAtNextLogin: true,
+    changePasswordAtNextLogin: ACCOUNT_CONFIG.CHANGE_PASSWORD_AT_NEXT_LOGIN,
     orgUnitPath: CONFIG.TEACHER_ORG_UNIT_PATH,
     recoveryEmail: recoveryEmail || undefined
   };
@@ -372,7 +318,7 @@ function sendUserCreatedEmail_(form, institutionalEmail) {
   const recipient = normalizeRecoveryEmail_(form);
   if (!recipient) return;
 
-  const template = HtmlService.createTemplateFromFile('UserCreatedEmail');
+  const template = HtmlService.createTemplateFromFile(ACCOUNT_CONFIG.EMAIL_TEMPLATE_FILE);
   template.account = {
     nom: clean_(form.Nom),
     cognoms: clean_(form.Cognoms),
@@ -382,7 +328,7 @@ function sendUserCreatedEmail_(form, institutionalEmail) {
 
   MailApp.sendEmail({
     to: recipient,
-    subject: 'Nou compte de Google Workspace',
+    subject: ACCOUNT_CONFIG.EMAIL_SUBJECT,
     htmlBody: template.evaluate().getContent()
   });
 }
@@ -404,11 +350,11 @@ function syncDatabase_(databaseMatch, form, email) {
   setColumn_(values, headerMap, 'TELF', form['Telèfon de contacte']);
   setColumn_(values, headerMap, 'CORREU XTEC', normalizeXtecEmail_(form['Compte @xtec']));
   setColumn_(values, headerMap, 'CORREU INSTIT', email);
-  setColumn_(values, headerMap, 'ACTIVE', true);
+  setColumn_(values, headerMap, 'ACTIVE', DATABASE_DEFAULTS.ACTIVE);
   setColumn_(values, headerMap, 'Nom sencer', `${clean_(form.Nom)} ${clean_(form.Cognoms)}`.trim());
 
   if (!databaseMatch) {
-    setColumn_(values, headerMap, 'NOUS', 'TRUE');
+    setColumn_(values, headerMap, 'NOUS', DATABASE_DEFAULTS.NOUS);
     setColumn_(values, headerMap, 'SITUACIÓ', defaultValidationValue_(sheet, headerMap, 'SITUACIÓ') || values[headerMap['SITUACIÓ']]);
     appendValidatedDatabaseRow_(sheet, values);
     return;
@@ -464,11 +410,11 @@ function defaultValidationValue_(sheet, headerMap, header) {
 function markResponseSuccess_(rowNumber, userId, action, selectedEmail) {
   const sheet = getResponsesSheet_();
   const map = headerMap_(getHeaders_(sheet));
-  setResponseCell_(sheet, map, rowNumber, 'Status', 'Synced');
+  setResponseCell_(sheet, map, rowNumber, 'Status', FORM_RESPONSE_STATUS.SYNCED);
   setResponseCell_(sheet, map, rowNumber, 'Selected Google Email', selectedEmail);
   setResponseCell_(sheet, map, rowNumber, 'Google User ID', userId);
   setResponseCell_(sheet, map, rowNumber, 'Google User Action', action);
-  setResponseCell_(sheet, map, rowNumber, 'Google User Status', 'Success');
+  setResponseCell_(sheet, map, rowNumber, 'Google User Status', FORM_RESPONSE_STATUS.GOOGLE_SUCCESS);
   setResponseCell_(sheet, map, rowNumber, 'Google User Updated At', new Date());
   setResponseCell_(sheet, map, rowNumber, 'Error', '');
 }
@@ -476,30 +422,30 @@ function markResponseSuccess_(rowNumber, userId, action, selectedEmail) {
 function markResponseError_(rowNumber, message, statuses) {
   const sheet = getResponsesSheet_();
   const map = headerMap_(getHeaders_(sheet));
-  setResponseCell_(sheet, map, rowNumber, 'Status', 'Error');
-  setResponseCell_(sheet, map, rowNumber, 'Google User Status', 'Error');
+  setResponseCell_(sheet, map, rowNumber, 'Status', FORM_RESPONSE_STATUS.ERROR);
+  setResponseCell_(sheet, map, rowNumber, 'Google User Status', FORM_RESPONSE_STATUS.ERROR);
   setResponseCell_(sheet, map, rowNumber, 'Error', message);
   return { ok: false, message, statuses };
 }
 
 function createSyncStatuses_() {
   return {
-    google: { ok: null, message: 'Google user not created yet.' },
-    dinantia: { ok: null, message: 'Dinantia user not created yet.' },
-    database: { ok: null, message: 'User not added to database yet.' }
+    google: { ok: null, message: SYNC_STATUS_CONFIG.INITIAL.google },
+    dinantia: { ok: null, message: SYNC_STATUS_CONFIG.INITIAL.dinantia },
+    database: { ok: null, message: SYNC_STATUS_CONFIG.INITIAL.database }
   };
 }
 
 function formatSyncStatuses_(statuses) {
   return [
-    formatOneSyncStatus_('Google user', statuses.google),
-    formatOneSyncStatus_('Dinantia user', statuses.dinantia),
-    formatOneSyncStatus_('User added to database', statuses.database)
+    formatOneSyncStatus_(SYNC_STATUS_CONFIG.GOOGLE_LABEL, statuses.google),
+    formatOneSyncStatus_(SYNC_STATUS_CONFIG.DINANTIA_LABEL, statuses.dinantia),
+    formatOneSyncStatus_(SYNC_STATUS_CONFIG.DATABASE_LABEL, statuses.database)
   ].join('\n');
 }
 
 function formatOneSyncStatus_(label, status) {
-  if (label === 'User added to database') {
+  if (label === SYNC_STATUS_CONFIG.DATABASE_LABEL) {
     if (!status || status.ok === null) return `${label}: not correctly. ${status ? status.message : ''}`.trim();
     return `${label}: ${status.ok ? 'correctly' : 'not correctly'}. ${status.message || ''}`.trim();
   }
@@ -530,7 +476,7 @@ function dinantiaListGroups_() {
   let page = 1;
 
   while (true) {
-    const response = dinantiaRequest_('get', '/api/web/v1/groups/index', null, {
+    const response = dinantiaRequest_('get', DINANTIA_CONFIG.API_PATHS.GROUPS_INDEX, null, {
       limit: 100,
       page
     });
@@ -555,7 +501,7 @@ function dinantiaListGroups_() {
 function dinantiaGetAccountById_(id) {
   if (!id) return null;
   try {
-    const response = dinantiaRequest_('get', `/api/web/v1/accounts/view/${encodeURIComponent(id)}`);
+    const response = dinantiaRequest_('get', `${DINANTIA_CONFIG.API_PATHS.ACCOUNT_VIEW}/${encodeURIComponent(id)}`);
     return response.data || null;
   } catch (error) {
     if (isDinantiaNotFound_(error)) return null;
@@ -565,7 +511,7 @@ function dinantiaGetAccountById_(id) {
 
 function dinantiaFindAccountByEmail_(email) {
   if (!email) return null;
-  const response = dinantiaRequest_('get', '/api/web/v1/accounts/index', null, {
+  const response = dinantiaRequest_('get', DINANTIA_CONFIG.API_PATHS.ACCOUNTS_INDEX, null, {
     email,
     limit: 5
   });
@@ -574,8 +520,8 @@ function dinantiaFindAccountByEmail_(email) {
 }
 
 function dinantiaRequest_(method, path, payload, query) {
-  const user = getRequiredScriptProperty_('DINANTIA_USER');
-  const secret = getRequiredScriptProperty_('DINANTIA_SECRET');
+  const user = getRequiredScriptProperty_(DINANTIA_CONFIG.SCRIPT_PROPERTIES.USER);
+  const secret = getRequiredScriptProperty_(DINANTIA_CONFIG.SCRIPT_PROPERTIES.SECRET);
   const url = buildDinantiaUrl_(path, query);
   const options = {
     method,
@@ -659,12 +605,7 @@ function resolveAction_(dniNormalized, databaseMatch, googleUser) {
 }
 
 function actionLabel_(action) {
-  const labels = {
-    'missing-dni': 'Missing DNI',
-    create: 'Create Google and Dinantia users',
-    update: 'Update Google and Dinantia users'
-  };
-  return labels[action] || '';
+  return ADMIN_ACTION_LABELS[action] || '';
 }
 
 function getResponseRowObject_(rowNumber) {

@@ -280,6 +280,7 @@
     <script>
       const statusEl = document.getElementById('status');
       const rowsEl = document.getElementById('rows');
+      const CLIENT_CONFIG = <?!= clientConfig ?>;
       let dinantiaGroups = [];
 
       loadRows();
@@ -591,7 +592,7 @@
 
       function pillClass(row) {
         if (row.status === 'Error' || row.googleUserStatus === 'Error') return 'error';
-        if (row.status === 'Submitted') return 'warn';
+        if (row.status === CLIENT_CONFIG.submittedStatus) return 'warn';
         return '';
       }
 
