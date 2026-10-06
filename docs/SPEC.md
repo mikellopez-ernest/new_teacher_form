@@ -5,16 +5,16 @@
 Build two Google Apps Script web apps managed locally with `clasp`:
 
 1. A public teacher intake form web app.
-2. A protected admin web app for reviewing submissions and creating/updating Google Workspace users.
+2. A protected admin web app for reviewing submissions and creating Google Workspace and Dinantia users.
 
-The public form must be accessible without login. The admin tool must only be accessible to authorized Google Workspace users in the `/Administradors` organizational unit.
+The public form must be accessible without login. The admin tool must only be accessible to authorized Google Workspace users from the `iernestlluch.cat` domain, as defined by the admin script property `access_granted`.
 
 ## Architecture
 
 Use two separate Apps Script projects or two separately deployed web apps with physically separated admin code. The preferred security model is two projects:
 
 - `public-form`: anonymous web app, contains only form rendering and submission persistence.
-- `admin-console`: authenticated web app, contains spreadsheet review, authorization checks, and Google Workspace user operations.
+- `admin-console`: authenticated web app, contains spreadsheet review, authorization checks, Google Workspace user creation, Dinantia user creation, and teacher database synchronization.
 
 Both projects read shared configuration values such as spreadsheet IDs and Drive folder IDs from local config files that are uploaded with `clasp`.
 
@@ -29,7 +29,9 @@ const CONFIG = {
   FORM_RESPONSES_SPREADSHEET_ID: '1fnjQyGzoMw2m1NuZmL_TiS52cEmwyTkifS3tb_KGaMM',
   FORM_RESPONSES_SHEET_NAME: 'Form responses',
 
-  USER_DATABASE_SPREADSHEET_ID: '1InUG9G_vyZfLsgzDENqk5rO0rygEzV2ttS4I8ZoxA1A',
+  TABLES_SCRIPT_PROPERTY_NAME: 'Tables',
+  TABLES_REGISTRY_SHEET_NAME: 'tables',
+  USER_DATABASE_TABLE_NAME: 'Dades de professors',
   USER_DATABASE_SHEET_NAME: 'Llista',
 
   PHOTO_UPLOAD_FOLDER_ID: '1hhNV1wCbkVZYl7hqx78fqakhdr1-cgVz',
@@ -37,13 +39,18 @@ const CONFIG = {
 
   WORKSPACE_DOMAIN: 'iernestlluch.cat',
   TEACHER_ORG_UNIT_PATH: '/Personal educatiu',
-  ADMIN_ORG_UNIT_PATH: '/Administradors',
+  ACCESS_GRANTED_PROPERTY_NAME: 'access_granted',
+  WORKLOAD_REGISTRY_NAME: 'Càrrega lectiva',
+  WORKLOAD_PROFESSORS_SHEET_NAME: 'professors',
+  WORKLOAD_CARRECS_SHEET_NAME: 'carrecs',
 
   INITIAL_PASSWORD: 'ERNEST_LLUCH'
 };
 ```
 
-`USER_DATABASE_SPREADSHEET_ID` is only required by the admin app. Upload folder IDs are only required if uploaded files are stored in Drive by the public app.
+The admin app resolves the teacher database spreadsheet ID dynamically. It reads the Apps Script property named `Tables`; that property contains the spreadsheet ID of a registry spreadsheet. In that registry spreadsheet, sheet `tables` has column A `name` and column B `id`. The admin app must find the row where column A is exactly `Dades de professors` and use column B as the teacher database spreadsheet ID. Upload folder IDs are only required if uploaded files are stored in Drive by the public app.
+
+If the `Tables` property, registry spreadsheet, `tables` sheet, `Dades de professors` row, or resolved spreadsheet ID is missing, the admin app must fail with a clear admin-facing configuration error.
 
 ## Public Form Web App
 
@@ -74,15 +81,14 @@ The form should be a single-column Google Forms-like layout with:
 | --- | --- | --- | --- | --- |
 | `photo` | Fotografia | file | yes | Carnet-style photo. |
 | `nom` | Nom | text | yes | Given name. |
-| `cognoms` | Cognoms | text | yes | Full surname string. |
+| `cognom1` | Cognom 1 | text | yes | First surname. |
+| `cognom2` | Cognom 2 | text | no | Second surname. |
 | `dni` | DNI | text | yes | Stable matching key. Helper: `O altres`. |
 | `dataNaixement` | Data naixement | date/text | no | Original example: `7 de gener de 2019`. |
 | `telefon` | Telèfon de contacte | tel/text | yes | |
 | `compteXtec` | Compte @xtec | email/text | no | Later used as alternative/recovery email. |
 | `correuAlternatiu` | Compte de correu alternatiu | email/text | no | |
-| `adreca` | Adreça | text | no | |
-| `poblacio` | Població | text | no | |
-| `especialitat` | Especialitat | text | yes | Include original explanatory helper text. |
+| `especialitat` | Especialitat | select | yes | Options listed below. |
 | `departament` | Departament | select | no | Options listed below. |
 | `nomenament` | Nomenament | select | yes | Options listed below. |
 | `previsioReduccio` | Previsió de demanar reducció de jornada? | radio/select | yes | Options: `No`, `Si`. Include link `https://mote.fyi/8s7whh5`. |
@@ -95,18 +101,56 @@ The form should be a single-column Google Forms-like layout with:
 
 Department options:
 
+| Form label | Teacher DB `DEPT.` |
+| --- | --- |
+| `Llengües estrangeres` | `ANG` |
+| `Llengua castellana` | `CAS` |
+| `Llengua catalana` | `CAT` |
+| `Comerç` | `COM` |
+| `Diversitat` | `DIV` |
+| `Educació física` | `EFI` |
+| `Ciències experimentals` | `EXP` |
+| `Informàtica` | `INF` |
+| `Matemàtiques` | `MAT` |
+| `Orientació` | `ORI` |
+| `Perruqueria` | `PCC` |
+| `Socials` | `SOC` |
+| `Tecnologia` | `TEC` |
+| `Expressió artística` | `VIP` |
+
+Especialitat options:
+
 ```text
-Matemàtiques
-Català
-Castellà
-Llengües estrangeres
-Socials
-Ciències
-Educació Física
-Diversitat / orientació
-Expressió
-Informàtica
-Perruqueria
+505 - Formació i Orientació Laboral
+507 - Informàtica
+510 - Organització i gestió comercial
+618 - Perruqueria
+621 - Processos comerecials
+627 - Sistemes i aplicacions informàtiques
+A. Acoll
+Ang
+as
+Bio/Geo
+Cast
+Cast.
+Cat
+Dib.
+E. Fís
+Econ
+F82 - P.gestió admi.
+Filos.
+FiQ
+FPS - Or.educativa
+Francès
+Geo/Hª
+Llat
+Mat
+Mús.
+PAES
+Ps-Orient
+Ps-Orient (SIEI)
+Rel
+Tecn
 ```
 
 Nomenament options:
@@ -114,9 +158,14 @@ Nomenament options:
 ```text
 Funcionari amb plaça definitiva
 Funcionari amb plaça provisional
+Funcionari amb plaça perfilada
 Interinatge
-Substitució
+Interinatge amb plaça perfilada
+Comissió de serveis
+Laboral
 ```
+
+`Substitució` is no longer offered for new submissions. Its existing admin mapping remains available for previously submitted responses. `Comissió de serveis` writes `CS` to database `SITUACIO`; the database validation must allow `CS`.
 
 Jornada options:
 
@@ -137,7 +186,7 @@ On submit:
 2. Normalize `dni` for matching, but preserve the original value submitted by the user.
 3. Upload `photo`, if present, to `PHOTO_UPLOAD_FOLDER_ID`.
 4. Upload `solicitudReduccio`, if present, to `REDUCTION_UPLOAD_FOLDER_ID`.
-5. Append one row to the form responses spreadsheet.
+5. Append one row to the form responses spreadsheet by header name. Existing legacy columns such as `Cognoms`, `Adreça`, and `Població` may remain in older spreadsheets, but new submissions should not write them.
 6. Return a success screen or inline success state.
 
 File binary content must not be written directly to the spreadsheet. Store Drive file IDs and URLs.
@@ -152,14 +201,13 @@ Status
 Photo File ID
 Photo URL
 Nom
-Cognoms
+Cognom 1
+Cognom 2
 DNI
 Data naixement
 Telèfon de contacte
 Compte @xtec
 Compte de correu alternatiu
-Adreça
-Població
 Especialitat
 Departament
 Nomenament
@@ -188,26 +236,36 @@ Initial `Status` should be `Submitted`.
 
 The admin web app must be deployed as:
 
-- Execute as: user accessing the web app, if possible for identity checks.
-- Access: restricted to the Workspace domain or specific users.
+- Execute as: user deploying the web app.
+- Access: restricted to the Workspace domain.
 
-The admin app must fail closed. If the current user's email or organizational unit cannot be determined, access is denied.
+The admin app must fail closed. If the current user's email cannot be determined, access is denied.
 
 ### Authorization
 
-Admin access is based on Google Workspace organizational unit:
+Admin access is based on a reusable role/email allowlist. The admin app reads the Apps Script property:
 
 ```text
-/Administradors
+access_granted
 ```
 
-The admin app must check the signed-in user's email using Apps Script session identity, then retrieve that user's Admin Directory profile and verify:
+The property value is a comma-separated list of direct institutional emails and/or càrrecs. Entries containing `@` are direct allowed emails. Other entries are resolved as càrrecs through `Càrrega lectiva`.
 
-```js
-user.orgUnitPath === CONFIG.ADMIN_ORG_UNIT_PATH
+Example:
+
+```text
+Coord. 3ESO,COCOBE,mikellopez@iernestlluch.cat
 ```
 
-If the user is not in `/Administradors`, render an unauthorized page and do not load spreadsheet data.
+To resolve càrrecs, the admin app uses the same `Tables` registry mechanism:
+
+- Script property `Tables` contains the registry spreadsheet ID.
+- Registry sheet `tables` has logical names in column A and spreadsheet IDs in column B.
+- The row named `Càrrega lectiva` provides the workload spreadsheet ID.
+- Sheet `carrecs`: column A is the càrrec name, column D is the assigned person or comma-separated people.
+- Sheet `professors`: column Q is the full teacher name / lookup key, column L is `CORREU INSTIT`.
+
+Access is allowed only if the signed-in user's email matches a direct email from `access_granted` or an institutional email resolved from one of the configured càrrecs.
 
 Server-side action functions must call the same authorization guard. It is not enough to hide buttons in HTML.
 
@@ -220,9 +278,9 @@ For each row:
 1. Read the submitted `DNI`.
 2. Normalize the `DNI`.
 3. Check the user database spreadsheet for a matching `DNI`.
-4. If the `DNI` exists in the user database, use `CORREU INSTIT` from that database row as the authoritative institutional email for Google user lookup.
+4. If the `DNI` exists in the user database, use `CORREU` from that database row as the Google lookup email, then stop the automatic create flow and warn the admin.
 5. If the `DNI` does not exist in the user database, use the generated email suggestion from the form row for Google user lookup.
-6. Compute whether the row should show a create or update action.
+6. Compute whether the row can be created or must be stopped for admin review.
 
 Dynamic row action:
 
@@ -231,13 +289,10 @@ Missing DNI
 => no action button, show "Missing DNI"
 
 DNI not found in user database
-=> show "Create Google User"
+=> show "Create Google and Dinantia users"
 
-DNI found in user database and corresponding Google user exists
-=> show "Update Google User"
-
-DNI found in user database but corresponding Google user no longer exists
-=> show "Create Google User"
+DNI found in user database
+=> no create button, warn that the DNI already exists in the teacher database
 ```
 
 Each row should show:
@@ -250,7 +305,10 @@ Each row should show:
 - Current status.
 - Suggested institutional email.
 - Editable institutional email textbox.
-- Create/Update button.
+- Suggested Untis alias / Dinantia ID.
+- One editable textbox for the shared Untis alias and Dinantia ID.
+- Alias check button that verifies the alias is not already present in teacher DB column `REDUIT` and not already used as a Dinantia account ID.
+- Create button when the DNI is not already present in the teacher database.
 - Last sync result/error.
 
 ### Suggested Email Rule
@@ -258,18 +316,19 @@ Each row should show:
 The suggested institutional email is:
 
 ```text
-normalized(nom) + normalized(first surname from cognoms) + @iernestlluch.cat
+normalized(nom) + normalized(cognom1) + @iernestlluch.cat
 ```
 
 Example:
 
 ```text
 Nom: Mikel
-Cognoms: López Villarroya
+Cognom 1: López
+Cognom 2: Villarroya
 Suggested email: mikellopez@iernestlluch.cat
 ```
 
-The first surname is the first token before any space in `cognoms`.
+The first surname is submitted explicitly as `cognom1`.
 
 Normalization rules:
 
@@ -296,10 +355,11 @@ When creating a Google Workspace user:
 - Primary email: selected institutional email from the admin textbox.
 - Domain: `iernestlluch.cat`.
 - Given name: submitted `Nom`.
-- Family name: submitted `Cognoms`.
+- Family name: submitted `Cognom 1` + optional `Cognom 2`.
 - Password: `ERNEST_LLUCH`.
 - Force password change on first login: yes.
 - Organization unit: `/Personal educatiu`.
+- Add the new user to Google Group `claustre@iernestlluch.cat`.
 - Alternative/recovery email: submitted `Compte @xtec`, when present.
 
 Required Admin Directory user payload fields:
@@ -309,7 +369,7 @@ Required Admin Directory user payload fields:
   primaryEmail: selectedEmail,
   name: {
     givenName: nom,
-    familyName: cognoms
+    familyName: cognom1 + " " + cognom2
   },
   password: CONFIG.INITIAL_PASSWORD,
   changePasswordAtNextLogin: true,
@@ -319,21 +379,15 @@ Required Admin Directory user payload fields:
 
 Additional email fields should be added only where supported by the Admin Directory API. `Compte @xtec` must not be used as the account username.
 
-### User Update
+### Existing DNI Behavior
 
-When updating an existing Google Workspace user:
+The current workflow does not automatically update existing teacher database rows or existing Google Workspace users. When a submitted `DNI` already exists in `Llista`, the admin table must warn the admin and disable the create action for that row.
 
-- Match the user database row by normalized `DNI`.
-- Use the selected institutional email as the intended institutional account.
-- Update relevant user profile fields where safe:
-  - name
-  - org unit path
-  - recovery/alternate email if supported and present
-- Do not reset password during ordinary update unless explicitly requested later.
+### Creation Sequence And Database Synchronization
 
-### Database Synchronization
+After validation succeeds and before creating external accounts, append to the teacher database spreadsheet. Google Workspace creation, Dinantia creation, and user email notification must not start unless the teacher database write succeeds. This makes spreadsheet validation errors stop the workflow before any external user accounts are created.
 
-After create/update succeeds, update the teacher database spreadsheet. The form response row is deleted after Google Workspace, teacher database, and Dinantia synchronization all succeed.
+The form response row is deleted after teacher database, Google Workspace, and Dinantia synchronization all succeed.
 
 V1 sends the user an email after account creation with the institutional username and initial password. The admin UI displays per-system status for Google Workspace, Dinantia, and database synchronization.
 
@@ -343,13 +397,13 @@ Form responses row before deletion:
 Status = Synced
 Selected Google Email = selected email
 Google User ID = returned Google user ID
-Google User Action = Created or Updated
+Google User Action = Created
 Google User Status = Success
 Google User Updated At = current timestamp
 Error = blank
 ```
 
-If create/update fails at any step:
+If creation fails at any step:
 
 ```text
 Status = Error
@@ -361,6 +415,15 @@ The row remains visible in the admin table when a step fails. Successful step st
 
 User database spreadsheet:
 
+The teacher database spreadsheet ID is not a fixed source value. The admin app resolves it through the `Tables` script property registry:
+
+- Script property: `Tables`
+- Registry spreadsheet sheet: `tables`
+- Registry column A: `name`
+- Registry column B: `id`
+- Lookup name: `Dades de professors`
+- Resolved spreadsheet tab: `Llista`
+
 Existing columns are fixed:
 
 ```text
@@ -369,45 +432,94 @@ DEPT.
 NOM
 COGNOM1
 COGNOM2
-BAIXA?
-CÀRREC
-CAP DEPT
-COORD
-TUTORIA
-EQUIP
-FANTASMA
-SITUACIÓ
+REDUIT
+SITUACIO
+JORNADA
 DNI
 TELF
-CORREU XTEC
-CORREU INSTIT
+XTEC
+CORREU
 NOUS
-ACTIVE
-Nom sencer
+ACTIU
+BAIXA?
+SUBST?
 ```
 
-When no matching `DNI` exists, append a new database row.
+Current live sheets may keep Catalan/accented or legacy header names. The admin writer must accept both forms for these destinations:
+
+| Canonical header | Accepted live aliases |
+| --- | --- |
+| `REDUIT` | `REDUIT`, `REDUÏT` |
+| `SITUACIO` | `SITUACIO`, `SITUACIÓ` |
+| `XTEC` | `XTEC`, `CORREU XTEC` |
+| `CORREU` | `CORREU`, `CORREU INSTIT` |
+| `ACTIU` | `ACTIU`, `ACTIVE` |
+
+When no matching `DNI` exists, append a new database row. When a matching `DNI` already exists, warn the admin and do not update the existing database row automatically.
 
 Suggested mappings:
 
 | Database column | Source |
 | --- | --- |
 | `ESP` | Submitted `Especialitat` |
-| `DEPT.` | Submitted `Departament` |
+| `DEPT.` | Submitted `Departament`, mapped to the corresponding teacher DB department code |
 | `NOM` | Submitted `Nom` |
-| `COGNOM1` | First token of submitted `Cognoms` |
-| `COGNOM2` | Remaining surname tokens |
+| `COGNOM1` | Submitted `Cognom 1` |
+| `COGNOM2` | Submitted `Cognom 2` |
+| `REDUIT` | Editable admin-selected Untis alias / Dinantia ID; default is generated from first two normalized letters of first surname + department code |
+| `SITUACIO` | Mapped from submitted `Nomenament` |
+| `JORNADA` | Mapped from submitted `Jornada` |
 | `DNI` | Submitted `DNI` |
 | `TELF` | Submitted `Telèfon de contacte` |
-| `CORREU XTEC` | Submitted `Compte @xtec`, normalized to an `@xtec.cat` address when needed |
-| `CORREU INSTIT` | Selected institutional email |
-| `NOUS` | `TRUE` or `Sí` for newly appended rows |
-| `ACTIVE` | Checkbox value `TRUE` |
-| `Nom sencer` | `Nom + " " + Cognoms` |
+| `XTEC` | Submitted `Compte @xtec`, normalized to an `@xtec.cat` address when needed |
+| `CORREU` | Selected institutional email |
+| `NOUS` | Boolean `TRUE` for newly appended rows |
+| `ACTIU` | Boolean `TRUE` |
+| `BAIXA?` | Boolean `FALSE` |
+| `SUBST?` | Boolean `TRUE` only when submitted `Nomenament` is `Substitució`; otherwise `FALSE` |
 
-Columns without a direct source should be preserved on update and left blank on insert unless later specified.
+`SITUACIO` mapping:
 
-When appending a new row to `Llista`, copy the previous row, clear its contents, and then write the new teacher values. This preserves formatting, dropdown validations such as `SITUACIÓ` from `VARIABLES!A1:A20`, and checkbox validation such as `ACTIVE`.
+| Form `Nomenament` | Database `SITUACIO` |
+| --- | --- |
+| `Funcionari amb plaça definitiva` | `FUNC. DEF` |
+| `Funcionari amb plaça provisional` | `FUNC. SNS PLAÇA` |
+| `Funcionari amb plaça perfilada` | `FUNC. PERFIL` |
+| `Interinatge` | `INT` |
+| `Interinatge amb plaça perfilada` | `INT. PERF` |
+| `Comissió de serveis` | `CS` |
+| `Substitució` | `INT` |
+| `Laboral` | `LABORAL` |
+
+`JORNADA` mapping:
+
+| Form `Jornada` | Database `JORNADA` |
+| --- | --- |
+| `Sencera` | `SENCERA` |
+| `Mitja` | `MITJA` |
+| `Terç` | `REDUCCIÓ UN TERÇ` |
+| `Sencera amb reducció` | `REDUCCIÓ UN TERÇ` |
+
+Boolean columns are `NOUS`, `ACTIU`, `BAIXA?`, and `SUBST?`. Reads should treat both boolean `true` and string `TRUE` as true. Writes should use real booleans.
+
+Substitute eligibility must be based on `SUBST? === true` and `ACTIU === true`; do not infer substitute status from `SITUACIO`.
+
+Removed legacy columns are not written anymore: `CÀRREC`, `CAP DEPT`, `COORD`, `TUTORIA`, `EQUIP`, `FANTASMA`, and `Nom sencer`. Full name is calculated on the fly from `NOM`, `COGNOM1`, and `COGNOM2` when needed.
+
+When appending a new row to `Llista`, copy the previous row, clear its contents, and then write the new teacher values. This preserves formatting, dropdown validations such as `SITUACIO` and `JORNADA`, and checkbox validation such as `ACTIU`, `BAIXA?`, and `SUBST?`.
+
+If leave-of-absence logic is added or used, the DB spreadsheet also has a `leave_absence` sheet:
+
+```text
+row_id
+teacher_code
+substitute_code
+start_date
+end_date
+comments
+```
+
+`row_id` is the original row number in `Llista`; `teacher_code` is `ESP`; `substitute_code` is the substitute teacher `REDUIT`. Starting a leave sets `BAIXA?` to `true`; ending a leave fills `end_date` and sets `BAIXA?` to `false`.
 
 ## Apps Script Services And Scopes
 
@@ -425,9 +537,14 @@ Required OAuth scopes should include:
 
 ```json
 [
+  "https://www.googleapis.com/auth/userinfo.email",
+  "https://www.googleapis.com/auth/script.send_mail",
+  "https://www.googleapis.com/auth/script.external_request",
   "https://www.googleapis.com/auth/spreadsheets",
   "https://www.googleapis.com/auth/drive",
-  "https://www.googleapis.com/auth/admin.directory.user"
+  "https://www.googleapis.com/auth/admin.directory.user",
+  "https://www.googleapis.com/auth/admin.directory.user.readonly",
+  "https://www.googleapis.com/auth/admin.directory.group.member"
 ]
 ```
 
@@ -442,9 +559,9 @@ The admin app may need additional Admin Directory scopes if future requirements 
 - The initial password is currently fixed by requirement; avoid logging it.
 - Error messages shown to public users should not expose internal spreadsheet IDs, Drive IDs, or Admin Directory payloads.
 
-## Open Implementation Decisions
+## Settled Implementation Decisions
 
-- Whether uploaded files should be renamed using `DNI`, timestamp, and field name.
-- Whether the public form should use `doPost` or `google.script.run`.
-- Whether the admin update action should support changing a user's primary email or only update metadata/database rows.
-- Whether `Compte @xtec` maps to recovery email, external ID, notes, or custom schema in Google Workspace.
+- Public form submission uses `google.script.run`.
+- Uploaded files are initially saved with normalized `DNI`, upload kind, and timestamp. Photos are renamed to the normalized `DNI` during admin processing.
+- Existing DNI rows are not updated automatically; the admin UI warns and disables creation for that row.
+- `Compte @xtec` maps to Google Workspace recovery email. If it is missing, `Compte de correu alternatiu` is used.

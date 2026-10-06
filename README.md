@@ -40,9 +40,9 @@ Public form deployment:
 
 Admin console deployment:
 
-- Execute as: user accessing the web app.
+- Execute as: user deploying the web app.
 - Access: domain users.
-- The signed-in user must belong to `/Administradors`.
+- The signed-in user must be allowed by the `access_granted` script property, either directly by email or through a càrrec resolved from `Càrrega lectiva`.
 
 ## Google Services
 
@@ -81,7 +81,9 @@ Form submissions:
 
 Teacher database:
 
-- Spreadsheet ID: `1InUG9G_vyZfLsgzDENqk5rO0rygEzV2ttS4I8ZoxA1A`
+- Spreadsheet ID: resolved by the admin script property `Tables`
+- Registry sheet: `tables`
+- Registry lookup: column A `name` equals `Dades de professors`; column B `id` is the spreadsheet ID
 - Tab name: `Llista`
 
 ## Upload Folders

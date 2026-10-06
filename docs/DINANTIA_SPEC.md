@@ -4,7 +4,7 @@
 
 Add Dinantia account synchronization to the teacher onboarding workflow.
 
-The current project already collects teacher data, creates/updates Google Workspace users, updates the teacher database, sends notification emails, and removes processed form rows. Dinantia must be integrated as an additional external system from the admin console.
+The current project already collects teacher data, creates Google Workspace users, appends to the teacher database, sends notification emails, and removes processed form rows. Dinantia is integrated as an additional external system from the admin console.
 
 When the admin creates a Google Workspace user, the system must also create the corresponding Dinantia staff account in the same workflow.
 
@@ -246,20 +246,22 @@ Custom field objects include:
 
 V1 should integrate Dinantia from the admin console, not from the public form.
 
-Recommended sequence when admin clicks create/update:
+Recommended sequence when admin clicks create:
 
 ```text
 1. Validate admin authorization.
 2. Read form row.
-3. Create/update Google Workspace user.
-4. Rename photo file to DNI.
-5. Sync local teacher database spreadsheet.
-6. Fetch current Dinantia groups from the API and let the admin choose:
+3. Stop with a warning if the submitted DNI already exists in the teacher database.
+4. Sync local teacher database spreadsheet by appending a new row. If spreadsheet validation fails, stop here.
+5. Create Google Workspace user and add it to the configured default group.
+6. Rename photo file to DNI.
+7. Use the current Dinantia groups fetched from the API when the admin console loaded and selected by the admin:
    - multiple general groups
+   - multiple optional teacher groups
    - one optional tutor group
-7. Create/update Dinantia Staff account using the institutional `iernestlluch.cat` email and selected group configuration.
-8. Send user email with Google account credentials.
-9. Delete form response row.
+8. Create Dinantia Staff account using the institutional `iernestlluch.cat` email and selected group configuration.
+9. Send user email with Google account credentials.
+10. Delete form response row.
 ```
 
 The form row should only be deleted after Google Workspace and Dinantia synchronization both succeed, unless we later decide Dinantia failures should be non-blocking.
@@ -294,27 +296,28 @@ Aznar + Català -> AZCAT
 
 The admin table should show:
 
-- Suggested Dinantia ID.
+- Suggested shared Untis alias / Dinantia ID.
 - Tooltip explaining how it was generated.
-- Editable textbox prefilled with the suggestion.
+- One editable textbox prefilled with the suggestion. The same value is written to teacher DB column `REDUIT` / `REDUÏT` and used as the Dinantia account `id`.
+- A check button that verifies the alias is not already present in teacher DB column `REDUIT` / `REDUÏT` and not already used as a Dinantia account ID.
 
-Before creating the Dinantia user, check whether the selected Dinantia ID already exists:
+Before creating the Dinantia user, check whether the selected shared alias already exists:
 
 ```http
 GET /api/web/v1/accounts/view/:id
 ```
 
-If it exists, warn the admin and require a different ID unless the flow is intentionally updating that same Dinantia account.
+If it exists, warn the admin and require a different ID.
 
 ## Dinantia Staff Payload
 
-For a teacher, create/update an account with role `Staff`.
+For a teacher, create an account with role `Staff`.
 
 Suggested payload:
 
 ```json
 {
-  "id": "12345678Z",
+  "id": "LOPRO",
   "name": "Lopez Villarroya, Mikel",
   "email": "mikellopez@iernestlluch.cat",
   "phone": "+34600111222",
@@ -340,8 +343,8 @@ Field mapping:
 | Dinantia field | Source |
 | --- | --- |
 | `id` | Admin-selected Dinantia short-code ID. |
-| `name` | Dinantia style: `Cognoms + ", " + Nom`. |
-| `email` | Selected institutional email / `CORREU INSTIT`. |
+| `name` | Dinantia style: full surname string + `", "` + `Nom`; full surname string is `Cognom 1` + optional `Cognom 2`. |
+| `email` | Selected institutional email / `CORREU`. |
 | `phone` | `Telèfon de contacte`, only if converted to E.164 format. |
 | `gender` | Default `other`. |
 | `language` | Default `ca_ES`. |
@@ -404,7 +407,7 @@ Default selected general groups for new teachers:
 ["CLA", "ESO", "BAT", "CIC"]
 ```
 
-When creating/updating the Dinantia staff account, apply the selected general groups to these scopes:
+When creating the Dinantia staff account, apply the selected general groups to these scopes:
 
 ```js
 groups: {
@@ -444,7 +447,7 @@ Behavior:
 - Allow selecting multiple teacher groups.
 - Show selected teacher groups as removable chips.
 - The teacher groups are optional.
-- When creating/updating the Dinantia staff account, add:
+- When creating the Dinantia staff account, add:
 
 ```js
 groups: {
@@ -551,9 +554,9 @@ Required Apps Script OAuth scope:
 The current form response row is deleted after all three steps succeed:
 
 ```text
-Google user created/updated
-Teacher database row added/updated
-Dinantia user created/updated
+Google user created
+Teacher database row added
+Dinantia user created
 ```
 
 If any step fails, the form response row remains in the admin table and the admin UI displays separate statuses for Google, Dinantia, and the database. No separate sync log sheet is currently implemented.
@@ -568,7 +571,7 @@ Failure cases:
 - JSON cannot be parsed.
 - Response has `success === false`.
 - Response contains an `errors` array.
-- Required response `data` is missing after create/update.
+- Required response `data` is missing after create.
 
 On failure:
 

@@ -1,11 +1,17 @@
 const CONFIG = {
   FORM_RESPONSES_SPREADSHEET_ID: '1fnjQyGzoMw2m1NuZmL_TiS52cEmwyTkifS3tb_KGaMM',
   FORM_RESPONSES_SHEET_NAME: 'Form responses',
-  USER_DATABASE_SPREADSHEET_ID: '1InUG9G_vyZfLsgzDENqk5rO0rygEzV2ttS4I8ZoxA1A',
+  TABLES_SCRIPT_PROPERTY_NAME: 'Tables',
+  ACCESS_GRANTED_PROPERTY_NAME: 'access_granted',
+  TABLES_REGISTRY_SHEET_NAME: 'tables',
+  USER_DATABASE_TABLE_NAME: 'Dades de professors',
   USER_DATABASE_SHEET_NAME: 'Llista',
+  WORKLOAD_REGISTRY_NAME: 'Càrrega lectiva',
+  WORKLOAD_PROFESSORS_SHEET_NAME: 'professors',
+  WORKLOAD_CARRECS_SHEET_NAME: 'carrecs',
   WORKSPACE_DOMAIN: 'iernestlluch.cat',
   TEACHER_ORG_UNIT_PATH: '/Personal educatiu',
-  ADMIN_ORG_UNIT_PATH: '/Administradors',
+  DEFAULT_GOOGLE_GROUP_EMAIL: 'claustre@iernestlluch.cat',
   INITIAL_PASSWORD: 'ERNEST_LLUCH'
 };
 
@@ -37,17 +43,26 @@ const DINANTIA_CONFIG = {
   DEFAULT_LANGUAGE: 'ca_ES',
   DEFAULT_GENDER: 'other',
   DEPARTMENT_CODES: {
+    'Llengües estrangeres': 'ANG',
+    'Llengua castellana': 'CAS',
+    'Llengua catalana': 'CAT',
+    'Comerç': 'COM',
+    'Diversitat': 'DIV',
+    'Educació física': 'EFI',
+    'Ciències experimentals': 'EXP',
+    'Informàtica': 'INF',
     'Matemàtiques': 'MAT',
+    'Orientació': 'ORI',
+    'Perruqueria': 'PCC',
+    'Socials': 'SOC',
+    'Tecnologia': 'TEC',
+    'Expressió artística': 'VIP',
     'Català': 'CAT',
     'Castellà': 'CAS',
-    'Llengües estrangeres': 'ANG',
-    'Socials': 'CIE',
-    'Ciències': 'CIE0',
-    'Educació Física': 'EDU',
-    'Diversitat / orientació': 'PSI',
-    'Expressió': 'EXP',
-    'Informàtica': 'INF',
-    'Perruqueria': 'IMA'
+    'Ciències': 'EXP',
+    'Educació Física': 'EFI',
+    'Diversitat / orientació': 'DIV',
+    'Expressió': 'VIP'
   }
 };
 
@@ -57,14 +72,13 @@ const RESPONSE_HEADERS = [
   'Photo File ID',
   'Photo URL',
   'Nom',
-  'Cognoms',
+  'Cognom 1',
+  'Cognom 2',
   'DNI',
   'Data naixement',
   'Telèfon de contacte',
   'Compte @xtec',
   'Compte de correu alternatiu',
-  'Adreça',
-  'Població',
   'Especialitat',
   'Departament',
   'Nomenament',
@@ -91,22 +105,36 @@ const DATABASE_HEADERS = [
   'NOM',
   'COGNOM1',
   'COGNOM2',
-  'BAIXA?',
-  'CÀRREC',
-  'CAP DEPT',
-  'COORD',
-  'TUTORIA',
-  'EQUIP',
-  'FANTASMA',
-  'SITUACIÓ',
+  'REDUIT',
+  'SITUACIO',
+  'JORNADA',
   'DNI',
   'TELF',
-  'CORREU XTEC',
-  'CORREU INSTIT',
+  'XTEC',
+  'CORREU',
   'NOUS',
-  'ACTIVE',
-  'Nom sencer'
+  'ACTIU',
+  'BAIXA?',
+  'SUBST?'
 ];
+
+const DATABASE_HEADER_ALIASES = {
+  REDUIT: ['REDUIT', 'REDUÏT'],
+  SITUACIO: ['SITUACIO', 'SITUACIÓ'],
+  XTEC: ['XTEC', 'CORREU XTEC'],
+  CORREU: ['CORREU', 'CORREU INSTIT'],
+  ACTIU: ['ACTIU', 'ACTIVE']
+};
+
+const WORKLOAD_PROFESSORS_COLUMNS = {
+  CORREU_INSTIT: 12,
+  TEACHER_KEY: 17
+};
+
+const CARRECS_COLUMNS = {
+  CARREC: 1,
+  ASIGNADO: 4
+};
 
 const ACCOUNT_CONFIG = {
   DINANTIA_STAFF_ROLE: 'Staff',
@@ -118,7 +146,8 @@ const ACCOUNT_CONFIG = {
 };
 
 const ADMIN_ACTION_LABELS = {
-  'missing-dni': 'Missing DNI',
+  'missing-dni': 'Falta DNI',
+  'existing-dni': 'DNI ja existeix a la base de dades',
   create: 'Create Google and Dinantia users',
   update: 'Update Google and Dinantia users'
 };
@@ -131,8 +160,20 @@ const FORM_RESPONSE_STATUS = {
 };
 
 const DATABASE_DEFAULTS = {
-  ACTIVE: true,
-  NOUS: 'TRUE'
+  ACTIU: true,
+  BAIXA: false,
+  NOUS: true,
+  SUBST: false
+};
+
+const NOMENAMENT_SITUACIO_MAP = {
+  'Comissió de serveis': 'CS',
+  'Funcionari amb plaça definitiva': 'FUNC. DEF',
+  'Funcionari amb plaça provisional': 'FUNC. SNS PLAÇA',
+  'Funcionari amb plaça perfilada': 'FUNC. PERFIL',
+  'Interinatge amb plaça perfilada': 'INT. PERF',
+  'Substitució': 'INT',
+  'Laboral': 'LABORAL'
 };
 
 const SYNC_STATUS_CONFIG = {

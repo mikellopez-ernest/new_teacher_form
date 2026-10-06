@@ -1,18 +1,19 @@
 function doGet() {
-  try {
-    requireAdmin_();
-    const template = HtmlService.createTemplateFromFile('Admin');
-    template.clientConfig = JSON.stringify({
-      submittedStatus: FORM_RESPONSE_STATUS.SUBMITTED
-    });
-    return template.evaluate()
-      .setTitle('Gestió professorat')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-  } catch (error) {
+  const access = getAccessDecision_();
+  if (!access.allowed) {
     const template = HtmlService.createTemplateFromFile('Unauthorized');
-    template.message = error.message || String(error);
+    template.message = access.message;
+    template.email = access.email || '';
     return template.evaluate().setTitle('Accés no autoritzat');
   }
+
+  const template = HtmlService.createTemplateFromFile('Admin');
+  template.clientConfig = JSON.stringify({
+    submittedStatus: FORM_RESPONSE_STATUS.SUBMITTED
+  });
+  return template.evaluate()
+    .setTitle('Gestió professorat')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function getAdminRows() {
@@ -23,21 +24,27 @@ function getAdminRows() {
   const databaseIndex = buildDatabaseIndex_();
 
   return responseData.rows.map((row) => {
+    const cognom1 = getCognom1_(row.object);
+    const cognom2 = getCognom2_(row.object);
+    const cognoms = buildCognoms_(cognom1, cognom2);
     const dniNormalized = row.object['DNI Normalized'] || normalizeDni_(row.object.DNI);
     const dbMatch = dniNormalized ? databaseIndex.byDni[dniNormalized] : null;
     const lookupEmail = dbMatch
-      ? clean_(dbMatch.object['CORREU INSTIT'])
-      : clean_(row.object['Suggested Google Email']) || buildSuggestedEmail_(row.object.Nom, row.object.Cognoms);
+      ? getDatabaseEmail_(dbMatch.object)
+      : clean_(row.object['Suggested Google Email']) || buildSuggestedEmail_(row.object.Nom, cognom1);
     const googleUser = lookupEmail ? findGoogleUser_(lookupEmail) : null;
     const selectedEmail = clean_(row.object['Selected Google Email']) || lookupEmail;
     const action = resolveAction_(dniNormalized, dbMatch, googleUser);
+    const suggestedTeacherAlias = buildTeacherCode_(cognom1, row.object.Departament);
 
     return {
       rowNumber: row.rowNumber,
       dni: clean_(row.object.DNI),
       dniNormalized,
       nom: clean_(row.object.Nom),
-      cognoms: clean_(row.object.Cognoms),
+      cognom1,
+      cognom2,
+      cognoms,
       departament: clean_(row.object.Departament),
       nomenament: clean_(row.object.Nomenament),
       jornada: clean_(row.object.Jornada),
@@ -47,16 +54,18 @@ function getAdminRows() {
       error: clean_(row.object.Error),
       googleUserStatus: clean_(row.object['Google User Status']),
       googleUserUpdatedAt: stringifyDate_(row.object['Google User Updated At']),
-      suggestedEmail: buildSuggestedEmail_(row.object.Nom, row.object.Cognoms),
-      suggestedDinantiaId: buildSuggestedDinantiaId_(row.object.Cognoms, row.object.Departament),
+      suggestedEmail: buildSuggestedEmail_(row.object.Nom, cognom1),
+      suggestedTeacherAlias,
+      suggestedDinantiaId: suggestedTeacherAlias,
       defaultDinantiaGeneralGroupIds: DINANTIA_CONFIG.DEFAULT_GENERAL_GROUP_IDS,
       lookupEmail,
       selectedEmail,
       databaseFound: Boolean(dbMatch),
+      databaseWarning: dbMatch ? 'Aquest DNI ja existeix a la base de dades. Revisa la fila abans de continuar.' : '',
       googleUserExists: Boolean(googleUser),
       action,
       actionLabel: actionLabel_(action),
-      canRunAction: action === 'create' || action === 'update',
+      canRunAction: action === 'create',
       photoUrl: clean_(row.object['Photo URL']),
       reductionUrl: clean_(row.object['Reducció File URL'])
     };
@@ -87,7 +96,7 @@ function checkEmailAvailability(email, rowNumber) {
   const row = getResponseRowObject_(rowNumber);
   const rowDni = normalizeDni_(row.object.DNI);
   const databaseMatch = buildDatabaseIndex_().byDni[rowDni];
-  const databaseEmail = databaseMatch ? normalizeEmail_(databaseMatch.object['CORREU INSTIT']) : '';
+  const databaseEmail = databaseMatch ? normalizeEmail_(getDatabaseEmail_(databaseMatch.object)) : '';
   const sameKnownUser = databaseEmail && databaseEmail === normalizedEmail;
 
   return {
@@ -106,12 +115,40 @@ function getDinantiaGroups() {
   return dinantiaListGroups_();
 }
 
+function checkAliasAvailability(alias) {
+  requireAdmin_();
+
+  const normalizedAlias = normalizeAlias_(alias);
+  if (!normalizedAlias) {
+    return { ok: false, available: false, message: 'Cal indicar un àlies.' };
+  }
+
+  const databaseMatch = buildDatabaseIndex_().byAlias[normalizedAlias] || null;
+  const dinantiaMatch = dinantiaGetAccountById_(normalizedAlias);
+  const messages = [];
+
+  if (databaseMatch) messages.push('ja existeix a la base de dades');
+  if (dinantiaMatch) messages.push('ja existeix a Dinantia');
+
+  return {
+    ok: true,
+    available: !messages.length,
+    alias: normalizedAlias,
+    existsInDatabase: Boolean(databaseMatch),
+    existsInDinantia: Boolean(dinantiaMatch),
+    message: messages.length
+      ? `L'àlies ${normalizedAlias} ${messages.join(' i ')}. Escriu-ne un altre.`
+      : `L'àlies ${normalizedAlias} està disponible.`
+  };
+}
+
 function createOrUpdateGoogleUser(rowNumber, selectedEmail, dinantiaOptions) {
   requireAdmin_();
 
   const row = getResponseRowObject_(rowNumber);
   const form = row.object;
   const options = dinantiaOptions || {};
+  const selectedAlias = normalizeAlias_(options.teacherAlias || options.dinantiaId);
   const statuses = createSyncStatuses_();
   const dniNormalized = normalizeDni_(form.DNI);
   if (!dniNormalized) {
@@ -120,7 +157,11 @@ function createOrUpdateGoogleUser(rowNumber, selectedEmail, dinantiaOptions) {
 
   const databaseIndex = buildDatabaseIndex_();
   const databaseMatch = databaseIndex.byDni[dniNormalized] || null;
-  const authoritativeEmail = databaseMatch ? clean_(databaseMatch.object['CORREU INSTIT']) : '';
+  if (databaseMatch) {
+    return markResponseError_(rowNumber, 'Aquest DNI ja existeix a la base de dades. No s\'actualitzarà automàticament.', statuses);
+  }
+
+  const authoritativeEmail = databaseMatch ? getDatabaseEmail_(databaseMatch.object) : '';
   const requestedEmail = normalizeEmail_(selectedEmail || authoritativeEmail || form['Suggested Google Email']);
 
   if (!requestedEmail) {
@@ -132,21 +173,36 @@ function createOrUpdateGoogleUser(rowNumber, selectedEmail, dinantiaOptions) {
   }
 
   const existingRequestedUser = findGoogleUser_(requestedEmail);
-  const existingKnownUser = authoritativeEmail ? findGoogleUser_(authoritativeEmail) : null;
-  const shouldUpdate = Boolean(databaseMatch && existingKnownUser);
+  const shouldUpdate = false;
 
   if (!shouldUpdate && existingRequestedUser) {
     return markResponseError_(rowNumber, 'Aquest correu ja existeix. Escriu-ne un altre abans de crear l\'usuari.', statuses);
   }
 
+  if (!selectedAlias) {
+    return markResponseError_(rowNumber, 'Cal indicar un àlies Untis / ID Dinantia.', statuses);
+  }
+
+  const aliasAvailability = checkAliasAvailability_(selectedAlias);
+  if (!aliasAvailability.available) {
+    return markResponseError_(rowNumber, aliasAvailability.message, statuses);
+  }
+
   let result;
-  const action = shouldUpdate ? ACCOUNT_CONFIG.UPDATED_ACTION : ACCOUNT_CONFIG.CREATED_ACTION;
+  const action = ACCOUNT_CONFIG.CREATED_ACTION;
 
   try {
-    result = shouldUpdate
-      ? updateGoogleUser_(existingKnownUser.primaryEmail, form, requestedEmail)
-      : createGoogleUser_(form, requestedEmail);
-    statuses.google = { ok: true, message: `Google user ${action === ACCOUNT_CONFIG.CREATED_ACTION ? 'created' : 'updated'} correctly.` };
+    syncDatabase_(databaseMatch, form, requestedEmail, selectedAlias);
+    statuses.database = { ok: true, message: 'User added to database correctly.' };
+  } catch (error) {
+    statuses.database = { ok: false, message: `User added to database not correctly. ${error.message || String(error)}` };
+    return markResponseError_(rowNumber, formatSyncStatuses_(statuses), statuses);
+  }
+
+  try {
+    result = createGoogleUser_(form, requestedEmail);
+    addGoogleUserToDefaultGroup_(requestedEmail);
+    statuses.google = { ok: true, message: `Google user created correctly and added to ${CONFIG.DEFAULT_GOOGLE_GROUP_EMAIL}.` };
   } catch (error) {
     statuses.google = { ok: false, message: `Google user not created correctly. ${error.message || String(error)}` };
     return markResponseError_(rowNumber, formatSyncStatuses_(statuses), statuses);
@@ -154,10 +210,8 @@ function createOrUpdateGoogleUser(rowNumber, selectedEmail, dinantiaOptions) {
 
   try {
     renamePhotoToDni_(form);
-    syncDatabase_(databaseMatch, form, requestedEmail);
-    statuses.database = { ok: true, message: 'User added to database correctly.' };
   } catch (error) {
-    statuses.database = { ok: false, message: `User added to database not correctly. ${error.message || String(error)}` };
+    statuses.google = { ok: false, message: `Google user created, but photo was not renamed correctly. ${error.message || String(error)}` };
     return markResponseError_(rowNumber, formatSyncStatuses_(statuses), statuses);
   }
 
@@ -209,8 +263,21 @@ function setupDinantiaCredentials(user, secret) {
   return 'Credencials de Dinantia configurades.';
 }
 
+function grantRequiredPermissions() {
+  PropertiesService.getScriptProperties().getProperty(CONFIG.TABLES_SCRIPT_PROPERTY_NAME);
+  PropertiesService.getScriptProperties().getProperty(CONFIG.ACCESS_GRANTED_PROPERTY_NAME);
+  Session.getActiveUser().getEmail();
+  getWorkloadCarrecsSheet_().getRange(1, 1).getValue();
+  getWorkloadProfessorsSheet_().getRange(1, 1).getValue();
+
+  return {
+    ok: true,
+    message: 'Permisos concedits correctament.'
+  };
+}
+
 function syncDinantiaStaff_(form, institutionalEmail, options, shouldUpdate) {
-  const dinantiaId = clean_(options.dinantiaId).toUpperCase();
+  const dinantiaId = normalizeAlias_(options.dinantiaId || options.teacherAlias);
   const generalGroupIds = normalizeGroupIds_(options.generalGroupIds);
   const teacherGroupIds = normalizeGroupIds_(options.teacherGroupIds);
   const tutorGroupId = clean_(options.tutorGroupId);
@@ -248,7 +315,7 @@ function syncDinantiaStaff_(form, institutionalEmail, options, shouldUpdate) {
 
   const payload = {
     id: dinantiaId,
-    name: buildDinantiaName_(form.Nom, form.Cognoms),
+    name: buildDinantiaName_(form.Nom, getFullCognoms_(form)),
     email: institutionalEmail,
     phone: normalizeSpanishPhone_(form['Telèfon de contacte']) || undefined,
     gender: DINANTIA_CONFIG.DEFAULT_GENDER,
@@ -273,7 +340,7 @@ function createGoogleUser_(form, email) {
     primaryEmail: email,
     name: {
       givenName: clean_(form.Nom),
-      familyName: clean_(form.Cognoms)
+      familyName: getFullCognoms_(form)
     },
     password: CONFIG.INITIAL_PASSWORD,
     changePasswordAtNextLogin: ACCOUNT_CONFIG.CHANGE_PASSWORD_AT_NEXT_LOGIN,
@@ -283,12 +350,27 @@ function createGoogleUser_(form, email) {
   return AdminDirectory.Users.insert(removeUndefined_(payload));
 }
 
+function addGoogleUserToDefaultGroup_(email) {
+  const groupEmail = CONFIG.DEFAULT_GOOGLE_GROUP_EMAIL;
+  if (!groupEmail) return;
+
+  try {
+    AdminDirectory.Members.insert({
+      email,
+      role: 'MEMBER'
+    }, groupEmail);
+  } catch (error) {
+    if (isAlreadyMember_(error)) return;
+    throw error;
+  }
+}
+
 function updateGoogleUser_(currentEmail, form, requestedEmail) {
   const recoveryEmail = normalizeRecoveryEmail_(form);
   const payload = {
     name: {
       givenName: clean_(form.Nom),
-      familyName: clean_(form.Cognoms)
+      familyName: getFullCognoms_(form)
     },
     orgUnitPath: CONFIG.TEACHER_ORG_UNIT_PATH,
     recoveryEmail: recoveryEmail || undefined
@@ -321,7 +403,7 @@ function sendUserCreatedEmail_(form, institutionalEmail) {
   const template = HtmlService.createTemplateFromFile(ACCOUNT_CONFIG.EMAIL_TEMPLATE_FILE);
   template.account = {
     nom: clean_(form.Nom),
-    cognoms: clean_(form.Cognoms),
+    cognoms: getFullCognoms_(form),
     username: institutionalEmail,
     password: CONFIG.INITIAL_PASSWORD
   };
@@ -333,34 +415,39 @@ function sendUserCreatedEmail_(form, institutionalEmail) {
   });
 }
 
-function syncDatabase_(databaseMatch, form, email) {
+function syncDatabase_(databaseMatch, form, email, teacherAlias) {
+  if (databaseMatch) {
+    throw new Error('Aquest DNI ja existeix a la base de dades. No s\'actualitzarà automàticament.');
+  }
+
   const sheet = getDatabaseSheet_();
   const headerMap = headerMap_(getHeaders_(sheet));
-  const values = databaseMatch
-    ? sheet.getRange(databaseMatch.rowNumber, 1, 1, sheet.getLastColumn()).getValues()[0]
-    : new Array(sheet.getLastColumn()).fill('');
-  const surnames = splitSurnames_(form.Cognoms);
+  const values = new Array(sheet.getLastColumn()).fill('');
+  const surnames = {
+    first: getCognom1_(form),
+    rest: getCognom2_(form)
+  };
+  const departmentCode = mapDepartmentCode_(form.Departament);
+  const resolvedTeacherAlias = normalizeAlias_(teacherAlias) || buildTeacherCode_(surnames.first, form.Departament);
 
   setColumn_(values, headerMap, 'ESP', form.Especialitat);
-  setColumn_(values, headerMap, 'DEPT.', form.Departament);
+  setColumn_(values, headerMap, 'DEPT.', departmentCode);
   setColumn_(values, headerMap, 'NOM', form.Nom);
   setColumn_(values, headerMap, 'COGNOM1', surnames.first);
   setColumn_(values, headerMap, 'COGNOM2', surnames.rest);
+  setColumnAny_(values, headerMap, DATABASE_HEADER_ALIASES.REDUIT, resolvedTeacherAlias);
+  setColumnAny_(values, headerMap, DATABASE_HEADER_ALIASES.SITUACIO, mapSituacio_(form.Nomenament));
+  setColumn_(values, headerMap, 'JORNADA', mapJornada_(form.Jornada));
   setColumn_(values, headerMap, 'DNI', form.DNI);
   setColumn_(values, headerMap, 'TELF', form['Telèfon de contacte']);
-  setColumn_(values, headerMap, 'CORREU XTEC', normalizeXtecEmail_(form['Compte @xtec']));
-  setColumn_(values, headerMap, 'CORREU INSTIT', email);
-  setColumn_(values, headerMap, 'ACTIVE', DATABASE_DEFAULTS.ACTIVE);
-  setColumn_(values, headerMap, 'Nom sencer', `${clean_(form.Nom)} ${clean_(form.Cognoms)}`.trim());
+  setColumnAny_(values, headerMap, DATABASE_HEADER_ALIASES.XTEC, normalizeXtecEmail_(form['Compte @xtec']));
+  setColumnAny_(values, headerMap, DATABASE_HEADER_ALIASES.CORREU, email);
+  setColumn_(values, headerMap, 'NOUS', DATABASE_DEFAULTS.NOUS);
+  setColumnAny_(values, headerMap, DATABASE_HEADER_ALIASES.ACTIU, DATABASE_DEFAULTS.ACTIU);
+  setColumn_(values, headerMap, 'BAIXA?', DATABASE_DEFAULTS.BAIXA);
+  setColumn_(values, headerMap, 'SUBST?', isSubstituteNomenament_(form.Nomenament));
 
-  if (!databaseMatch) {
-    setColumn_(values, headerMap, 'NOUS', DATABASE_DEFAULTS.NOUS);
-    setColumn_(values, headerMap, 'SITUACIÓ', defaultValidationValue_(sheet, headerMap, 'SITUACIÓ') || values[headerMap['SITUACIÓ']]);
-    appendValidatedDatabaseRow_(sheet, values);
-    return;
-  }
-
-  sheet.getRange(databaseMatch.rowNumber, 1, 1, values.length).setValues([values]);
+  appendValidatedDatabaseRow_(sheet, values);
 }
 
 function appendValidatedDatabaseRow_(sheet, values) {
@@ -464,11 +551,36 @@ function buildDatabaseIndex_() {
   const sheet = getDatabaseSheet_();
   const data = readSheetObjects_(sheet);
   const byDni = {};
+  const byAlias = {};
   data.rows.forEach((row) => {
     const normalized = normalizeDni_(row.object.DNI);
     if (normalized) byDni[normalized] = row;
+    const alias = normalizeAlias_(row.object['REDUIT'] || row.object['REDUÏT']);
+    if (alias) byAlias[alias] = row;
   });
-  return { byDni };
+  return { byDni, byAlias };
+}
+
+function checkAliasAvailability_(alias) {
+  const normalizedAlias = normalizeAlias_(alias);
+  if (!normalizedAlias) {
+    return { available: false, message: 'Cal indicar un àlies.' };
+  }
+
+  const databaseMatch = buildDatabaseIndex_().byAlias[normalizedAlias] || null;
+  const dinantiaMatch = dinantiaGetAccountById_(normalizedAlias);
+  const messages = [];
+
+  if (databaseMatch) messages.push('ja existeix a la base de dades');
+  if (dinantiaMatch) messages.push('ja existeix a Dinantia');
+
+  return {
+    available: !messages.length,
+    alias: normalizedAlias,
+    message: messages.length
+      ? `L'àlies ${normalizedAlias} ${messages.join(' i ')}. Escriu-ne un altre.`
+      : `L'àlies ${normalizedAlias} està disponible.`
+  };
 }
 
 function dinantiaListGroups_() {
@@ -599,6 +711,7 @@ function getRequiredScriptProperty_(key) {
 
 function resolveAction_(dniNormalized, databaseMatch, googleUser) {
   if (!dniNormalized) return 'missing-dni';
+  if (databaseMatch) return 'existing-dni';
   if (!databaseMatch) return 'create';
   if (!googleUser) return 'create';
   return 'update';
@@ -658,7 +771,21 @@ function headerMap_(headers) {
 function setColumn_(values, headerMap, header, value) {
   const index = headerMap[header];
   if (index === undefined) return;
+  if (typeof value === 'boolean') {
+    values[index] = value;
+    return;
+  }
   values[index] = clean_(value);
+}
+
+function setColumnAny_(values, headerMap, headers, value) {
+  for (let index = 0; index < headers.length; index += 1) {
+    const header = headers[index];
+    if (headerMap[header] !== undefined) {
+      setColumn_(values, headerMap, header, value);
+      return;
+    }
+  }
 }
 
 function getResponsesSheet_() {
@@ -671,10 +798,63 @@ function getResponsesSheet_() {
 
 function getDatabaseSheet_() {
   const sheet = SpreadsheetApp
-    .openById(CONFIG.USER_DATABASE_SPREADSHEET_ID)
+    .openById(resolveDatabaseSpreadsheetId_())
     .getSheetByName(CONFIG.USER_DATABASE_SHEET_NAME);
   if (!sheet) throw new Error(`No s'ha trobat la pestanya ${CONFIG.USER_DATABASE_SHEET_NAME}.`);
   return sheet;
+}
+
+function getWorkloadSpreadsheet_() {
+  return getRegisteredSpreadsheet_(CONFIG.WORKLOAD_REGISTRY_NAME);
+}
+
+function getWorkloadProfessorsSheet_() {
+  const sheet = getWorkloadSpreadsheet_().getSheetByName(CONFIG.WORKLOAD_PROFESSORS_SHEET_NAME);
+  if (!sheet) {
+    throw new Error(`No s'ha trobat el full "${CONFIG.WORKLOAD_PROFESSORS_SHEET_NAME}" a ${CONFIG.WORKLOAD_REGISTRY_NAME}.`);
+  }
+  return sheet;
+}
+
+function getWorkloadCarrecsSheet_() {
+  const sheet = getWorkloadSpreadsheet_().getSheetByName(CONFIG.WORKLOAD_CARRECS_SHEET_NAME);
+  if (!sheet) {
+    throw new Error(`No s'ha trobat el full "${CONFIG.WORKLOAD_CARRECS_SHEET_NAME}" a ${CONFIG.WORKLOAD_REGISTRY_NAME}.`);
+  }
+  return sheet;
+}
+
+function resolveDatabaseSpreadsheetId_() {
+  return resolveRegisteredSpreadsheetId_(CONFIG.USER_DATABASE_TABLE_NAME);
+}
+
+function getRegisteredSpreadsheet_(registryName) {
+  return SpreadsheetApp.openById(resolveRegisteredSpreadsheetId_(registryName));
+}
+
+function resolveRegisteredSpreadsheetId_(registryName) {
+  const registrySpreadsheetId = getRequiredScriptProperty_(CONFIG.TABLES_SCRIPT_PROPERTY_NAME);
+  const registrySheet = SpreadsheetApp
+    .openById(registrySpreadsheetId)
+    .getSheetByName(CONFIG.TABLES_REGISTRY_SHEET_NAME);
+
+  if (!registrySheet) {
+    throw new Error(`No s'ha trobat la pestanya ${CONFIG.TABLES_REGISTRY_SHEET_NAME} al registre de taules.`);
+  }
+
+  const values = registrySheet.getDataRange().getValues();
+  for (let index = 0; index < values.length; index += 1) {
+    const tableName = clean_(values[index][0]);
+    if (tableName === registryName) {
+      const spreadsheetId = clean_(values[index][1]);
+      if (!spreadsheetId) {
+        throw new Error(`La taula ${registryName} no té cap ID configurat.`);
+      }
+      return spreadsheetId;
+    }
+  }
+
+  throw new Error(`No s'ha trobat la taula ${registryName} al registre.`);
 }
 
 function findGoogleUser_(email) {
@@ -692,72 +872,189 @@ function isNotFound_(error) {
   return message.includes('Resource Not Found') || message.includes('notFound') || message.includes('Not Found');
 }
 
+function isAlreadyMember_(error) {
+  const message = String(error && error.message ? error.message : error).toLowerCase();
+  return message.includes('member already exists') || message.includes('duplicate') || message.includes('already exists');
+}
+
 function requireAdmin_() {
-  const context = getAdminContext_();
-  if (context.allowed) return context.user;
+  const context = getAccessDecision_();
+  if (context.allowed) return context;
 
   throw new Error(context.message);
 }
 
-function getAdminContext_() {
-  const email = Session.getActiveUser().getEmail();
-  if (!email) {
-    return {
-      allowed: false,
-      message: 'No s\'ha pogut identificar l\'usuari actiu. Revisa que el desplegament de l\'admin s\'executi com a usuari que accedeix i que requereixi inici de sessió.'
-    };
-  }
-
-  let user;
+function getAccessDecision_() {
   try {
-    user = AdminDirectory.Users.get(email);
+    const userEmail = normalizeEmail_(Session.getActiveUser().getEmail());
+    if (!userEmail) {
+      return {
+        allowed: false,
+        email: '',
+        message: 'No s\'ha pogut identificar el correu de l\'usuari actiu.'
+      };
+    }
+
+    const accessEntries = getAccessGrantedEntries_();
+    if (!accessEntries.length) {
+      return {
+        allowed: false,
+        email: userEmail,
+        message: `Falta configurar la propietat de script "${CONFIG.ACCESS_GRANTED_PROPERTY_NAME}".`
+      };
+    }
+
+    const directEmails = accessEntries
+      .map(normalizeEmail_)
+      .filter((entry) => entry.indexOf('@') !== -1);
+    const roles = accessEntries.filter((entry) => normalizeEmail_(entry).indexOf('@') === -1);
+    const people = [];
+
+    if (roles.length) {
+      const peopleByRole = getPeopleByAccessRole_();
+      roles.forEach((role) => {
+        const assignedPeople = peopleByRole.get(normalizeText_(role)) || [];
+        assignedPeople.forEach((person) => people.push(person));
+      });
+    }
+
+    const authorizedEmails = roles.length ? getEmailsForPeople_(people) : new Set();
+    directEmails.forEach((email) => authorizedEmails.add(email));
+
+    const allowed = authorizedEmails.has(userEmail);
+    return {
+      allowed,
+      email: userEmail,
+      accessEntries,
+      roles,
+      directEmails,
+      people,
+      message: allowed
+        ? 'Accés autoritzat.'
+        : 'No tens permisos per accedir a aquesta aplicació.'
+    };
   } catch (error) {
     return {
       allowed: false,
-      email,
-      message: `No s'ha pogut llegir l'usuari ${email} amb Admin Directory: ${error.message || String(error)}`
+      email: normalizeEmail_(Session.getActiveUser().getEmail()),
+      message: error && error.message ? error.message : String(error)
     };
   }
+}
 
-  const allowedByOrgUnit = user && user.orgUnitPath === CONFIG.ADMIN_ORG_UNIT_PATH;
-  const allowedByAdminRole = Boolean(user && (user.isAdmin || user.isDelegatedAdmin));
+function getAccessGrantedEntries_() {
+  return splitCommaList_(
+    PropertiesService.getScriptProperties().getProperty(CONFIG.ACCESS_GRANTED_PROPERTY_NAME)
+  );
+}
 
-  if (allowedByOrgUnit || allowedByAdminRole) {
-    return {
-      allowed: true,
-      email,
-      user,
-      orgUnitPath: user.orgUnitPath,
-      isAdmin: Boolean(user.isAdmin),
-      isDelegatedAdmin: Boolean(user.isDelegatedAdmin)
-    };
-  }
+function getPeopleByAccessRole_() {
+  const sheet = getWorkloadCarrecsSheet_();
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return new Map();
 
-  return {
-    allowed: false,
-    email,
-    orgUnitPath: user && user.orgUnitPath,
-    isAdmin: Boolean(user && user.isAdmin),
-    isDelegatedAdmin: Boolean(user && user.isDelegatedAdmin),
-    message: `No tens permisos per accedir a aquesta eina. Usuari detectat: ${email}. OU: ${user && user.orgUnitPath ? user.orgUnitPath : 'desconeguda'}. Admin: ${Boolean(user && user.isAdmin)}. Admin delegat: ${Boolean(user && user.isDelegatedAdmin)}.`
-  };
+  const values = sheet.getRange(2, 1, lastRow - 1, CARRECS_COLUMNS.ASIGNADO).getValues();
+  const peopleByRole = new Map();
+
+  values.forEach((row) => {
+    const roleName = clean_(row[CARRECS_COLUMNS.CARREC - 1]);
+    if (!roleName) return;
+
+    peopleByRole.set(
+      normalizeText_(roleName),
+      splitCommaList_(row[CARRECS_COLUMNS.ASIGNADO - 1])
+    );
+  });
+
+  return peopleByRole;
+}
+
+function getEmailsForPeople_(people) {
+  const sheet = getWorkloadProfessorsSheet_();
+  const lastRow = sheet.getLastRow();
+  const emails = new Set();
+  if (lastRow < 2 || !people.length) return emails;
+
+  const peopleSet = new Set(people.map((person) => normalizeText_(person)));
+  const values = sheet.getRange(2, 1, lastRow - 1, WORKLOAD_PROFESSORS_COLUMNS.TEACHER_KEY).getValues();
+
+  values.forEach((row) => {
+    const teacherKey = normalizeText_(row[WORKLOAD_PROFESSORS_COLUMNS.TEACHER_KEY - 1]);
+    if (!peopleSet.has(teacherKey)) return;
+
+    const email = normalizeEmail_(row[WORKLOAD_PROFESSORS_COLUMNS.CORREU_INSTIT - 1]);
+    if (email) emails.add(email);
+  });
+
+  people.forEach((person) => {
+    const directEmail = normalizeEmail_(person);
+    if (directEmail.indexOf('@') !== -1) emails.add(directEmail);
+  });
+
+  return emails;
 }
 
 function buildSuggestedEmail_(nom, cognoms) {
-  const firstSurname = String(cognoms || '').trim().split(/\s+/)[0] || '';
-  const localPart = `${normalizeForEmail_(nom)}${normalizeForEmail_(firstSurname)}`;
+  const localPart = `${normalizeForEmail_(nom)}${normalizeForEmail_(cognoms)}`;
   return localPart ? `${localPart}@${CONFIG.WORKSPACE_DOMAIN}` : '';
 }
 
 function buildSuggestedDinantiaId_(cognoms, departament) {
+  return buildTeacherCode_(cognoms, departament);
+}
+
+function buildTeacherCode_(cognoms, departament) {
   const firstSurname = splitSurnames_(cognoms).first;
   const prefix = normalizeForEmail_(firstSurname).slice(0, 2).toUpperCase();
-  const departmentCode = DINANTIA_CONFIG.DEPARTMENT_CODES[clean_(departament)] || 'PRO';
+  const departmentCode = mapDepartmentCode_(departament) || 'PRO';
   return `${prefix}${departmentCode}`;
+}
+
+function mapDepartmentCode_(departament) {
+  const value = clean_(departament);
+  if (!value) return '';
+  return DINANTIA_CONFIG.DEPARTMENT_CODES[value] || value;
+}
+
+function mapSituacio_(nomenament) {
+  const cleanNomenament = clean_(nomenament);
+  if (cleanNomenament === 'Interinatge') return 'INT';
+  return NOMENAMENT_SITUACIO_MAP[cleanNomenament] || cleanNomenament;
+}
+
+function mapJornada_(jornada) {
+  const normalized = normalizeForComparison_(jornada);
+  if (normalized === 'MITJA') return 'MITJA';
+  if (normalized.includes('TERC') || normalized.includes('REDUCCIO')) return 'REDUCCIÓ UN TERÇ';
+  return 'SENCERA';
+}
+
+function isSubstituteNomenament_(nomenament) {
+  return clean_(nomenament) === 'Substitució';
 }
 
 function buildDinantiaName_(nom, cognoms) {
   return `${clean_(cognoms)}, ${clean_(nom)}`.replace(/^,\s*/, '').trim();
+}
+
+function getCognom1_(object) {
+  return clean_(object['Cognom 1']) || splitSurnames_(object.Cognoms).first;
+}
+
+function getCognom2_(object) {
+  return clean_(object['Cognom 2']) || splitSurnames_(object.Cognoms).rest;
+}
+
+function getFullCognoms_(object) {
+  return buildCognoms_(getCognom1_(object), getCognom2_(object));
+}
+
+function buildCognoms_(cognom1, cognom2) {
+  return [clean_(cognom1), clean_(cognom2)].filter(Boolean).join(' ');
+}
+
+function getDatabaseEmail_(object) {
+  return clean_(object['CORREU']) || clean_(object['CORREU INSTIT']);
 }
 
 function normalizeForEmail_(value) {
@@ -772,8 +1069,34 @@ function normalizeForEmail_(value) {
     .replace(/[^a-z0-9]/g, '');
 }
 
+function normalizeForComparison_(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toUpperCase();
+}
+
+function normalizeText_(value) {
+  return clean_(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('ca');
+}
+
+function normalizeAlias_(value) {
+  return clean_(value).toUpperCase();
+}
+
 function normalizeEmail_(value) {
   return String(value || '').trim().toLowerCase();
+}
+
+function splitCommaList_(value) {
+  return clean_(value)
+    .split(',')
+    .map(clean_)
+    .filter(Boolean);
 }
 
 function normalizeGroupIds_(groupIds) {

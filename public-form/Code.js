@@ -20,43 +20,42 @@ function submitTeacherForm(payload) {
     data.dni,
     UPLOAD_FIELD_KIND.REDUCTION
   );
-  const suggestedEmail = buildSuggestedEmail_(data.nom, data.cognoms);
+  const cognoms = buildCognoms_(data.cognom1, data.cognom2);
+  const suggestedEmail = buildSuggestedEmail_(data.nom, data.cognom1);
   const sheet = getResponsesSheet_();
-  ensureHeaders_(sheet, RESPONSE_HEADERS);
-  sheet.appendRow([
-    new Date(),
-    FORM_STATUS.SUBMITTED,
-    photo.id,
-    photo.url,
-    clean_(data.nom),
-    clean_(data.cognoms),
-    clean_(data.dni),
-    clean_(data.dataNaixement),
-    clean_(data.telefon),
-    clean_(data.compteXtec),
-    clean_(data.correuAlternatiu),
-    clean_(data.adreca),
-    clean_(data.poblacio),
-    clean_(data.especialitat),
-    clean_(data.departament),
-    clean_(data.nomenament),
-    clean_(data.previsioReduccio),
-    clean_(data.motiuReduccio),
-    reduction.id,
-    reduction.url,
-    clean_(data.jornada),
-    clean_(data.anysEnsenyament),
-    clean_(data.anysInstitut),
-    clean_(data.aficions),
-    suggestedEmail,
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
-  ]);
-  sendAdminNotification_(data, suggestedEmail);
+  appendResponse_(sheet, {
+    'Timestamp': new Date(),
+    'Status': FORM_STATUS.SUBMITTED,
+    'Photo File ID': photo.id,
+    'Photo URL': photo.url,
+    'Nom': clean_(data.nom),
+    'Cognom 1': clean_(data.cognom1),
+    'Cognom 2': clean_(data.cognom2),
+    'DNI': clean_(data.dni),
+    'Data naixement': clean_(data.dataNaixement),
+    'Telèfon de contacte': clean_(data.telefon),
+    'Compte @xtec': clean_(data.compteXtec),
+    'Compte de correu alternatiu': clean_(data.correuAlternatiu),
+    'Especialitat': clean_(data.especialitat),
+    'Departament': clean_(data.departament),
+    'Nomenament': clean_(data.nomenament),
+    'Previsió reducció jornada': clean_(data.previsioReduccio),
+    'Motiu reducció': clean_(data.motiuReduccio),
+    'Reducció File ID': reduction.id,
+    'Reducció File URL': reduction.url,
+    'Jornada': clean_(data.jornada),
+    'Anys a ensenyament': clean_(data.anysEnsenyament),
+    "Anys a l'institut Ernest Lluch i Martín": clean_(data.anysInstitut),
+    'Aficions': clean_(data.aficions),
+    'Suggested Google Email': suggestedEmail,
+    'Selected Google Email': '',
+    'Google User ID': '',
+    'Google User Action': '',
+    'Google User Status': '',
+    'Google User Updated At': '',
+    'Error': ''
+  });
+  sendAdminNotification_(data, suggestedEmail, cognoms);
 
   return {
     ok: true,
@@ -117,14 +116,14 @@ function getResponsesSheet_() {
     .getSheetByName(CONFIG.FORM_RESPONSES_SHEET_NAME);
 }
 
-function sendAdminNotification_(data, suggestedEmail) {
+function sendAdminNotification_(data, suggestedEmail, cognoms) {
   const recipients = getAdminNotificationRecipients_();
   if (!recipients.length) return;
 
   const template = HtmlService.createTemplateFromFile(ADMIN_NOTIFICATION_CONFIG.TEMPLATE_FILE);
   template.submission = {
     nom: clean_(data.nom),
-    cognoms: clean_(data.cognoms),
+    cognoms: cognoms,
     dni: clean_(data.dni),
     departament: clean_(data.departament),
     nomenament: clean_(data.nomenament),
@@ -136,7 +135,7 @@ function sendAdminNotification_(data, suggestedEmail) {
 
   MailApp.sendEmail({
     to: recipients.join(','),
-    subject: `${ADMIN_NOTIFICATION_CONFIG.SUBJECT_PREFIX}: ${clean_(data.nom)} ${clean_(data.cognoms)}`.trim(),
+    subject: `${ADMIN_NOTIFICATION_CONFIG.SUBJECT_PREFIX}: ${clean_(data.nom)} ${cognoms}`.trim(),
     htmlBody
   });
 }
@@ -164,24 +163,42 @@ function getAdminNotificationRecipients_() {
   return Array.from(recipients);
 }
 
+function appendResponse_(sheet, object) {
+  const headers = ensureHeaders_(sheet, RESPONSE_HEADERS);
+  const row = headers.map((header) => Object.prototype.hasOwnProperty.call(object, header) ? object[header] : '');
+  sheet.appendRow(row);
+}
+
 function ensureHeaders_(sheet, headers) {
   if (!sheet) {
     throw new Error(`No s'ha trobat la pestanya ${CONFIG.FORM_RESPONSES_SHEET_NAME}.`);
   }
 
-  const range = sheet.getRange(1, 1, 1, headers.length);
-  const current = range.getValues()[0];
+  const lastColumn = Math.max(sheet.getLastColumn(), headers.length, 1);
+  const range = sheet.getRange(1, 1, 1, lastColumn);
+  const current = range.getValues()[0].map(clean_);
   const isBlank = current.every((value) => value === '');
   if (isBlank) {
-    range.setValues([headers]);
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     sheet.setFrozenRows(1);
+    return headers;
   }
+
+  const missing = headers.filter((header) => current.indexOf(header) === -1);
+  if (missing.length) {
+    sheet.getRange(1, current.length + 1, 1, missing.length).setValues([missing]);
+  }
+
+  return current.concat(missing);
 }
 
-function buildSuggestedEmail_(nom, cognoms) {
-  const firstSurname = String(cognoms || '').trim().split(/\s+/)[0] || '';
-  const localPart = `${normalizeForEmail_(nom)}${normalizeForEmail_(firstSurname)}`;
+function buildSuggestedEmail_(nom, cognom1) {
+  const localPart = `${normalizeForEmail_(nom)}${normalizeForEmail_(cognom1)}`;
   return localPart ? `${localPart}@${CONFIG.WORKSPACE_DOMAIN}` : '';
+}
+
+function buildCognoms_(cognom1, cognom2) {
+  return [clean_(cognom1), clean_(cognom2)].filter(Boolean).join(' ');
 }
 
 function normalizeForEmail_(value) {

@@ -248,13 +248,21 @@
         <div class="field">
           <div class="number">3.</div>
           <div>
-            <label for="cognoms">Cognoms <span class="required">*</span></label>
-            <input id="cognoms" name="cognoms" type="text" required autocomplete="family-name">
+            <label for="cognom1">Cognom 1 <span class="required">*</span></label>
+            <input id="cognom1" name="cognom1" type="text" required autocomplete="family-name">
           </div>
         </div>
 
         <div class="field">
           <div class="number">4.</div>
+          <div>
+            <label for="cognom2">Cognom 2</label>
+            <input id="cognom2" name="cognom2" type="text" autocomplete="additional-name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="number">5.</div>
           <div>
             <label for="dni">DNI <span class="required">*</span></label>
             <p class="help">O altres</p>
@@ -263,7 +271,7 @@
         </div>
 
         <div class="field">
-          <div class="number">5.</div>
+          <div class="number">6.</div>
           <div>
             <label for="dataNaixement">Data naixement</label>
             <input id="dataNaixement" name="dataNaixement" type="date">
@@ -272,7 +280,7 @@
         </div>
 
         <div class="field">
-          <div class="number">6.</div>
+          <div class="number">7.</div>
           <div>
             <label for="telefon">Telèfon de contacte <span class="required">*</span></label>
             <input id="telefon" name="telefon" type="tel" required autocomplete="tel">
@@ -280,7 +288,7 @@
         </div>
 
         <div class="field">
-          <div class="number">7.</div>
+          <div class="number">8.</div>
           <div>
             <label for="compteXtec">Compte @xtec</label>
             <input id="compteXtec" name="compteXtec" type="email">
@@ -288,7 +296,7 @@
         </div>
 
         <div class="field">
-          <div class="number">8.</div>
+          <div class="number">9.</div>
           <div>
             <label for="correuAlternatiu">Compte de correu alternatiu</label>
             <input id="correuAlternatiu" name="correuAlternatiu" type="email" autocomplete="email">
@@ -296,67 +304,89 @@
         </div>
 
         <div class="field">
-          <div class="number">9.</div>
-          <div>
-            <label for="adreca">Adreça</label>
-            <input id="adreca" name="adreca" type="text" autocomplete="street-address">
-          </div>
-        </div>
-
-        <div class="field">
           <div class="number">10.</div>
           <div>
-            <label for="poblacio">Població</label>
-            <input id="poblacio" name="poblacio" type="text" autocomplete="address-level2">
+            <label for="especialitat">Especialitat <span class="required">*</span></label>
+            <p class="help">Es refereix a l'especialitat del nomenament o de la plaça. En el cas d'especialitats amb codi de referència (507, 627...) que puguin donar a equívocs, especifiqueu-la amb claredat</p>
+            <select id="especialitat" name="especialitat" required>
+              <option value=""></option>
+              <option>505 - Formació i Orientació Laboral</option>
+              <option>507 - Informàtica</option>
+              <option>510 - Organització i gestió comercial</option>
+              <option>618 - Perruqueria</option>
+              <option>621 - Processos comerecials</option>
+              <option>627 - Sistemes i aplicacions informàtiques</option>
+              <option>A. Acoll</option>
+              <option>Ang</option>
+              <option>as</option>
+              <option>Bio/Geo</option>
+              <option>Cast</option>
+              <option>Cast.</option>
+              <option>Cat</option>
+              <option>Dib.</option>
+              <option>E. Fís</option>
+              <option>Econ</option>
+              <option>F82 - P.gestió admi.</option>
+              <option>Filos.</option>
+              <option>FiQ</option>
+              <option>FPS - Or.educativa</option>
+              <option>Francès</option>
+              <option>Geo/Hª</option>
+              <option>Llat</option>
+              <option>Mat</option>
+              <option>Mús.</option>
+              <option>PAES</option>
+              <option>Ps-Orient</option>
+              <option>Ps-Orient (SIEI)</option>
+              <option>Rel</option>
+              <option>Tecn</option>
+            </select>
           </div>
         </div>
 
         <div class="field">
           <div class="number">11.</div>
           <div>
-            <label for="especialitat">Especialitat <span class="required">*</span></label>
-            <p class="help">Es refereix a l'especialitat del nomenament o de la plaça. En el cas d'especialitats amb codi de referència (507, 627...) que puguin donar a equívocs, especifiqueu-la amb claredat</p>
-            <input id="especialitat" name="especialitat" type="text" required>
+            <label for="departament">Departament</label>
+            <select id="departament" name="departament">
+              <option value=""></option>
+              <option>Llengües estrangeres</option>
+              <option>Llengua castellana</option>
+              <option>Llengua catalana</option>
+              <option>Comerç</option>
+              <option>Diversitat</option>
+              <option>Educació física</option>
+              <option>Ciències experimentals</option>
+              <option>Informàtica</option>
+              <option>Matemàtiques</option>
+              <option>Orientació</option>
+              <option>Perruqueria</option>
+              <option>Socials</option>
+              <option>Tecnologia</option>
+              <option>Expressió artística</option>
+            </select>
           </div>
         </div>
 
         <div class="field">
           <div class="number">12.</div>
           <div>
-            <label for="departament">Departament</label>
-            <select id="departament" name="departament">
+            <label for="nomenament">Nomenament <span class="required">*</span></label>
+            <select id="nomenament" name="nomenament" required>
               <option value=""></option>
-              <option>Matemàtiques</option>
-              <option>Català</option>
-              <option>Castellà</option>
-              <option>Llengües estrangeres</option>
-              <option>Socials</option>
-              <option>Ciències</option>
-              <option>Educació Física</option>
-              <option>Diversitat / orientació</option>
-              <option>Expressió</option>
-              <option>Informàtica</option>
-              <option>Perruqueria</option>
+              <option>Funcionari amb plaça definitiva</option>
+              <option>Funcionari amb plaça provisional</option>
+              <option>Funcionari amb plaça perfilada</option>
+              <option>Interinatge</option>
+              <option>Interinatge amb plaça perfilada</option>
+              <option>Comissió de serveis</option>
+              <option>Laboral</option>
             </select>
           </div>
         </div>
 
         <div class="field">
           <div class="number">13.</div>
-          <div>
-            <label for="nomenament">Nomenament <span class="required">*</span></label>
-            <select id="nomenament" name="nomenament" required>
-              <option value=""></option>
-              <option>Funcionari amb plaça definitiva</option>
-              <option>Funcionari amb plaça provisional</option>
-              <option>Interinatge</option>
-              <option>Substitució</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <div class="number">14.</div>
           <div>
             <fieldset>
               <legend>Previsió de demanar reducció de jornada? <span class="required">*</span></legend>
@@ -370,7 +400,7 @@
         </div>
 
         <div class="field">
-          <div class="number">15.</div>
+          <div class="number">14.</div>
           <div>
             <label for="motiuReduccio">Motiu de la reducció</label>
             <p class="help">Només en cas de sol·licitar reducció de jornada durant el curs. Si és possible indiqueu també la data en la que preveieu de demanar-la.</p>
@@ -379,7 +409,7 @@
         </div>
 
         <div class="field">
-          <div class="number">16.</div>
+          <div class="number">15.</div>
           <div>
             <label for="solicitudReduccio">Sol·licitud de reducció de jornada</label>
             <input id="solicitudReduccio" name="solicitudReduccio" type="file">
@@ -387,7 +417,7 @@
         </div>
 
         <div class="field">
-          <div class="number">17.</div>
+          <div class="number">16.</div>
           <div>
             <label for="jornada">Jornada <span class="required">*</span></label>
             <select id="jornada" name="jornada" required>
@@ -401,7 +431,7 @@
         </div>
 
         <div class="field">
-          <div class="number">18.</div>
+          <div class="number">17.</div>
           <div>
             <label for="anysEnsenyament">Anys a ensenyament</label>
             <textarea id="anysEnsenyament" name="anysEnsenyament"></textarea>
@@ -409,7 +439,7 @@
         </div>
 
         <div class="field">
-          <div class="number">19.</div>
+          <div class="number">18.</div>
           <div>
             <label for="anysInstitut">Anys a l'institut Ernest Lluch i Martín</label>
             <input id="anysInstitut" name="anysInstitut" type="text">
@@ -417,7 +447,7 @@
         </div>
 
         <div class="field">
-          <div class="number">20.</div>
+          <div class="number">19.</div>
           <div>
             <label for="aficions">Aficions</label>
             <p class="help">Ens permet conèixer millor els treballadors i, en cas de necessitat, conèixer disponibilitat per organitzar activitats extraordinàries, xerrades, etc.</p>
@@ -472,14 +502,13 @@
         return {
           photo: await fileToPayload(formData.get('photo')),
           nom: formData.get('nom'),
-          cognoms: formData.get('cognoms'),
+          cognom1: formData.get('cognom1'),
+          cognom2: formData.get('cognom2'),
           dni: formData.get('dni'),
           dataNaixement: formData.get('dataNaixement'),
           telefon: formData.get('telefon'),
           compteXtec: formData.get('compteXtec'),
           correuAlternatiu: formData.get('correuAlternatiu'),
-          adreca: formData.get('adreca'),
-          poblacio: formData.get('poblacio'),
           especialitat: formData.get('especialitat'),
           departament: formData.get('departament'),
           nomenament: formData.get('nomenament'),

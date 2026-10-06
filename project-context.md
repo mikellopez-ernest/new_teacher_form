@@ -29,10 +29,14 @@ Behavior:
 
 - Public/anonymous web app.
 - Shows the teacher intake form.
+- Uses separate surname fields: `Cognom 1` and `Cognom 2`.
+- Does not collect `Adreça` or `Població`.
+- `Especialitat` is a required select field with the fixed configured option list.
+- `Nomenament` offers `Comissió de serveis` instead of `Substitució`. `Comissió de serveis` writes database `SITUACIO = CS` and `SUBST? = false`; database validation must allow `CS`. Retain legacy `Substitució` handling for existing responses.
 - Validates required fields server-side.
 - Uploads photo files to Drive folder `1hhNV1wCbkVZYl7hqx78fqakhdr1-cgVz`.
 - Uploads reduction request files to Drive folder `1JyphuC21DWvdahvKy8HEn6fQp-CNDjul`.
-- Appends submissions to spreadsheet `1fnjQyGzoMw2m1NuZmL_TiS52cEmwyTkifS3tb_KGaMM`, tab `Form responses`.
+- Appends submissions by header name to spreadsheet `1fnjQyGzoMw2m1NuZmL_TiS52cEmwyTkifS3tb_KGaMM`, tab `Form responses`.
 - Sends admin notification emails using addresses from spreadsheet `1eW91L6sWLs6cKg3AXi0spGc1vv6sYQ4jwiMvM-gK__E`; columns are `name`, `lastname`, `email`.
 - After successful submit, redirects to `https://agora.xtec.cat/sesernestlluch-cunit/`.
 
@@ -49,14 +53,26 @@ Files:
 Behavior:
 
 - Authenticated web app.
-- Allows users in `/Administradors`; superadmins/delegated admins are also allowed by code.
+- Web app access is restricted to domain users and executes as the deployer.
+- Allows only users listed by the `access_granted` script property.
+- `access_granted` is a comma-separated list of direct institutional emails and/or càrrecs.
+- Direct email entries are allowed immediately; càrrec entries are resolved through `Càrrega lectiva`.
+- `Càrrega lectiva` is resolved from the `Tables` registry. Sheet `carrecs` maps column A càrrec names to column D assigned people; sheet `professors` maps column Q full names to column L institutional emails.
 - Reads form rows from `Form responses`.
-- Checks the teacher database spreadsheet `1InUG9G_vyZfLsgzDENqk5rO0rygEzV2ttS4I8ZoxA1A`, tab `Llista`, by normalized `DNI`.
-- Uses `CORREU INSTIT` from `Llista` as authoritative email when a matching DNI exists.
+- Resolves the teacher database spreadsheet ID from the admin script property `Tables`.
+  - `Tables` contains the ID of a registry spreadsheet.
+  - Registry sheet is `tables`.
+  - Column A `name` contains `Dades de professors`.
+  - Column B `id` contains the teacher database spreadsheet ID.
+  - Teacher database tab remains `Llista`.
+- Checks the resolved teacher database by normalized `DNI`.
+- Uses `CORREU` from `Llista` as a lookup email when a matching DNI exists.
 - Otherwise suggests institutional email as `nom + first surname + @iernestlluch.cat`, normalized.
+- Shows and allows editing the Untis alias used for database column `REDUIT`.
 - Button labels:
   - `Create Google and Dinantia users`
-  - `Update Google and Dinantia users`
+- Existing DNI rows show a warning and cannot be created automatically.
+- Writes the teacher database row before creating Google Workspace/Dinantia accounts or sending email. If teacher DB validation fails, no external account creation begins.
 - Shows per-system statuses:
   - Google user created/not created correctly
   - Dinantia user created/not created correctly
@@ -69,7 +85,8 @@ Behavior:
 
 - Domain: `iernestlluch.cat`
 - New users go to org unit `/Personal educatiu`.
-- Admin access org unit: `/Administradors`.
+- New users are added to Google Group `claustre@iernestlluch.cat`.
+- Admin access is controlled by `access_granted`, not by organizational unit.
 - Initial password: `ERNEST_LLUCH`.
 - Force password change on first login.
 - `Compte @xtec` is used as recovery email; if missing, use `Compte de correu alternatiu`.
@@ -86,28 +103,40 @@ DEPT.
 NOM
 COGNOM1
 COGNOM2
-BAIXA?
-CÀRREC
-CAP DEPT
-COORD
-TUTORIA
-EQUIP
-FANTASMA
-SITUACIÓ
+REDUIT
+SITUACIO
+JORNADA
 DNI
 TELF
-CORREU XTEC
-CORREU INSTIT
+XTEC
+CORREU
 NOUS
-ACTIVE
-Nom sencer
+ACTIU
+BAIXA?
+SUBST?
 ```
+
+Live header compatibility:
+
+- The writer accepts `REDUIT` or `REDUÏT` for the generated/admin-selected teacher alias.
+- The writer accepts `SITUACIO` or `SITUACIÓ` for the mapped `Nomenament` value.
+- The writer accepts `XTEC` or `CORREU XTEC` for the XTEC email.
+- The writer accepts `CORREU` or `CORREU INSTIT` for the selected `@iernestlluch.cat` email.
+- The writer accepts `ACTIU` or `ACTIVE` for active status.
 
 Important behavior:
 
-- `CORREU XTEC` is filled from form field `Compte @xtec`.
-- `ACTIVE` is written as boolean `true`.
-- When appending to `Llista`, copy the previous row, clear content, then write the new teacher data. This preserves formatting, dropdown validation such as `SITUACIÓ` from `VARIABLES!A1:A20`, and checkbox validation such as `ACTIVE`.
+- `REDUIT` is the admin-selected Untis alias. It defaults to the generated teacher code: first two normalized letters of the first surname plus the department code. The same textbox value is also used as the Dinantia account ID.
+- `DEPT.` is written as the teacher database validation code, mapped from the public form department label: `Llengües estrangeres -> ANG`, `Llengua castellana -> CAS`, `Llengua catalana -> CAT`, `Comerç -> COM`, `Diversitat -> DIV`, `Educació física -> EFI`, `Ciències experimentals -> EXP`, `Informàtica -> INF`, `Matemàtiques -> MAT`, `Orientació -> ORI`, `Perruqueria -> PCC`, `Socials -> SOC`, `Tecnologia -> TEC`, `Expressió artística -> VIP`.
+- `SITUACIO` is mapped from form field `Nomenament`; `Substitució` writes `SITUACIO = INT` and `SUBST? = true`.
+- `JORNADA` is mapped from form field `Jornada` to `SENCERA`, `MITJA`, or `REDUCCIÓ UN TERÇ`.
+- `BAIXA?` is written as boolean `false` for new teachers.
+- `NOUS`, `ACTIU`, `BAIXA?`, and `SUBST?` are written as real booleans.
+- `XTEC` is filled from form field `Compte @xtec`.
+- `CORREU` is filled from the selected institutional email.
+- If a DNI already exists in `Llista`, warn the admin and do not update the existing database row automatically.
+- Removed legacy columns are no longer written: `CÀRREC`, `CAP DEPT`, `COORD`, `TUTORIA`, `EQUIP`, `FANTASMA`, and `Nom sencer`.
+- When appending to `Llista`, copy the previous row, clear content, then write the new teacher data. This preserves formatting, dropdown validation and checkbox validation.
 
 ## Dinantia Rules
 
@@ -123,9 +152,9 @@ Do not store the secret in source files.
 Dinantia config:
 
 - Base URL: `https://app.dinantia.com`
-- Create/update endpoint currently used: `POST /api/web/v1/accounts/update`
+- Create endpoint currently used: `POST /api/web/v1/accounts/update`
 - Account ID uses short-code style, e.g. `AZCAT`, not DNI.
-- Suggested ID: first two letters of first surname + department code.
+- Suggested ID: first two letters of first surname + department code. This is the same admin-edited value as the Untis alias.
 - Main Dinantia email is the institutional `@iernestlluch.cat` email.
 - Role: `Staff`
 - Default language: `ca_ES`

@@ -266,6 +266,7 @@
               <th>DNI</th>
               <th>Detalls</th>
               <th>Correu institucional</th>
+              <th>Àlies Untis</th>
               <th>Dinantia</th>
               <th>Fitxers</th>
               <th>Estat</th>
@@ -302,7 +303,7 @@
       function renderRows(rows) {
         rowsEl.innerHTML = '';
         if (!rows.length) {
-          rowsEl.innerHTML = '<tr><td colspan="8">No hi ha dades.</td></tr>';
+          rowsEl.innerHTML = '<tr><td colspan="9">No hi ha dades.</td></tr>';
           setStatus('No hi ha dades.');
           return;
         }
@@ -340,8 +341,14 @@
           </td>
           <td>
             <div class="cell-stack">
-              <label class="muted" title="Generat amb les dues primeres lletres del primer cognom i el codi del departament.">ID Dinantia</label>
-              <input class="dinantia-id" type="text" value="${escapeAttribute(row.suggestedDinantiaId || '')}" aria-label="ID Dinantia">
+              <span class="muted" title="Generat amb les dues primeres lletres del primer cognom i el codi del departament. També s'utilitza com a ID Dinantia.">${escapeHtml(row.suggestedTeacherAlias || '')}</span>
+              <input class="teacher-alias" type="text" value="${escapeAttribute(row.suggestedTeacherAlias || '')}" aria-label="Àlies Untis">
+              <button class="secondary alias-check" type="button">Comprova</button>
+              <div class="alias-message row-message"></div>
+            </div>
+          </td>
+          <td>
+            <div class="cell-stack">
               <div class="group-picker general-picker">
                 <span class="muted">Grups generals</span>
                 <input type="text" placeholder="Cerca grups..." aria-label="Grups generals Dinantia">
@@ -380,15 +387,18 @@
             <div class="cell-stack">
               <span class="muted">${row.databaseFound ? 'DNI trobat a Llista' : 'DNI no trobat a Llista'}</span>
               <span class="muted">${row.googleUserExists ? 'Usuari Google existent' : 'Usuari Google no existent'}</span>
+              ${row.databaseWarning ? `<span class="row-message">${escapeHtml(row.databaseWarning)}</span>` : ''}
             </div>
           </td>
         `;
 
         const emailInput = tr.querySelector('input[type="email"]');
-        const dinantiaIdInput = tr.querySelector('.dinantia-id');
-        const checkButton = tr.querySelector('button.secondary');
+        const teacherAliasInput = tr.querySelector('.teacher-alias');
+        const checkButton = tr.querySelector('td:nth-child(4) button.secondary');
+        const aliasCheckButton = tr.querySelector('.alias-check');
         const actionCell = tr.lastElementChild.querySelector('.cell-stack');
-        const message = tr.querySelector('.row-message');
+        const message = tr.querySelector('td:nth-child(4) .row-message');
+        const aliasMessage = tr.querySelector('.alias-message');
         const state = {
           generalGroupIds: [...(row.defaultDinantiaGeneralGroupIds || [])],
           teacherGroupIds: [],
@@ -405,14 +415,17 @@
         });
 
         checkButton.addEventListener('click', () => checkEmail(row.rowNumber, emailInput.value, message));
+        aliasCheckButton.addEventListener('click', () => checkAlias(teacherAliasInput.value, aliasMessage));
 
         if (row.canRunAction) {
           const actionButton = document.createElement('button');
           actionButton.type = 'button';
           actionButton.textContent = row.actionLabel;
           actionButton.addEventListener('click', () => {
+            const alias = teacherAliasInput.value;
             runAction(row.rowNumber, emailInput.value, {
-              dinantiaId: dinantiaIdInput.value,
+              dinantiaId: alias,
+              teacherAlias: alias,
               generalGroupIds: state.generalGroupIds,
               teacherGroupIds: state.teacherGroupIds,
               tutorGroupId: state.tutorGroupId
@@ -523,6 +536,21 @@
             messageEl.style.color = 'var(--danger)';
           })
           .checkEmailAvailability(email, rowNumber);
+      }
+
+      function checkAlias(alias, messageEl) {
+        messageEl.textContent = 'Comprovant àlies...';
+        messageEl.style.color = 'var(--muted)';
+        google.script.run
+          .withSuccessHandler((result) => {
+            messageEl.textContent = result.message;
+            messageEl.style.color = result.available ? 'var(--success)' : 'var(--danger)';
+          })
+          .withFailureHandler((error) => {
+            messageEl.textContent = error.message || String(error);
+            messageEl.style.color = 'var(--danger)';
+          })
+          .checkAliasAvailability(alias);
       }
 
       function runAction(rowNumber, email, dinantiaOptions, button, messageEl) {

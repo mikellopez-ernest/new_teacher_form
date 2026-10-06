@@ -31,12 +31,22 @@
         margin: 0;
         line-height: 1.5;
       }
+
+      .email {
+        margin-top: 12px;
+        color: #5f6368;
+        font-family: monospace;
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
     <main>
       <h1>Accés no autoritzat</h1>
       <p><?= message ?></p>
+      <? if (email) { ?>
+        <p class="email"><?= email ?></p>
+      <? } ?>
     </main>
   </body>
 </html>
